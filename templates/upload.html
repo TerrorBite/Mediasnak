@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Upload a file{% endblock %}
+
+{% block content %}
+<h1>Upload</h1>
+<p>
+<form action="http://s3.mediasnak.com/" method="post" enctype="multipart/form-data">
+<input type="hidden" name="key" value="{{ key }}" />
+<input type="hidden" name="acl" value="private" />
+<input type="hidden" name="content-type" value="text/plain" />
+<input type="hidden" name="AWSAccessKeyId" value="{{ aws_id }}" />
+<input type="hidden" name="policy" value="{{ policy }}" />
+<input type="hidden" name="signature" value="{{ signature }}" />
+Upload a file: <input type="file" name="file" size="40" />
+<input name="submit" value="Upload" type="submit" />
+</form>
+</p>
+{% endblock %}
