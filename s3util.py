@@ -6,8 +6,7 @@ Contains useful functions for interacting with Amazon S3.
 
 import hmac, hashlib, urllib, base64, time
 
-ACCESS_KEY = 'AKIAJUNFZFBBBS5EUM5A'
-SECRET_KEY = '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' #oops, the repo is public - this key has now been revoked.
+import access_keys
 
 URL_DEFAULT=0
 URL_SUBDOM=1
@@ -60,16 +59,20 @@ def sign_url(bucket, key, expiry=3600, method='GET', format=0, secure=False):
     # For details on how the below process works, please see:
     # http://docs.amazonwebservices.com/AmazonS3/latest/dev/RESTAuthentication.html#RESTAuthenticationQueryStringAuth
     
-    # Work out the string to hash. This string contains several parameters including the HTTP verb (GET, POST, etc),
-    # the expiry time, and the path to the file.
-    string = '{0}\n{1}\n{2}\n{3}\n{4}{5}'.format(method, content_md5, content_type, expiry, canon_headers, canon_path)
-    
-    # Calculate our signature. The signature is calculated by creating an HMAC-SHA1 hash of the above UTF-8 encoded string,
-    # using our secret key as the HMAC key. We then Base64 encode the result so it's URL-safe.
-    signature = base64.b64encode(hmac.new(SECRET_KEY, string.encode('utf8'), hashlib.sha1).digest())
+    # Work out the string to sign, and generate a signature from it. This string contains several parameters
+    # including the HTTP verb (GET, POST, etc), the expiry time, and the path to the file.
+    signature = hmac_sign('{0}\n{1}\n{2}\n{3}\n{4}{5}'.format(method, content_md5, content_type, expiry, canon_headers, canon_path))
     
     # Work out our parameters. The urlencode method will safely encode the data into a URL-friendly format.
-    params = urllib.urlencode({'AWSAccessKeyId': ACCESS_KEY, 'Signature': signature, 'Expires': expiry})
+    params = urllib.urlencode({'AWSAccessKeyId': access_keys.key_id, 'Signature': signature, 'Expires': expiry})
     
+    # Return the completed URL in either HTTP or HTTPS format.
     return '{0}{1}{2}?{3}'.format('https://' if secure else 'http://', host, path, params)
     
+def hmac_sign(s):
+    """
+    Generates a signature using HMAC-SHA1, with our secret key as the key.
+    """
+    # Calculate our signature. The signature is calculated by creating an HMAC-SHA1 hash of the above UTF-8 encoded string,
+    # using our secret key as the HMAC key. We then Base64 the binary result so it's safe for text transmission.
+    return base64.b64encode(hmac.new(access_keys.secret, s.encode('utf8'), hashlib.sha1).digest())

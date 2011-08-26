@@ -4,13 +4,14 @@
 from djangoappengine.settings_base import *
 
 import os
+import access_keys
 
 # Activate django-dbindexer for the default database
 DATABASES['native'] = DATABASES['default']
 DATABASES['default'] = {'ENGINE': 'dbindexer', 'TARGET': 'native'}
 AUTOLOAD_SITECONF = 'indexes'
 
-SECRET_KEY = '=r-$b*8hglm+858&9t043hlm6-&6-3d3vfc4((7yd0dbrakhvi'
+SECRET_KEY = access_keys.secret
 
 INSTALLED_APPS = (
 #    'django.contrib.admin',
