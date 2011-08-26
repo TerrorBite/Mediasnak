@@ -7,6 +7,6 @@ urlpatterns = patterns('',
     ('^$', 'django.views.generic.simple.direct_to_template',
      {'template': 'home.html'}),
      
-    ('^upload$', 'django.views.generic.simple.direct_to_template',
-     {'template': 'upload.html'}),
+    ('^upload$', 'views.upload_form',
+     {}),
 )
