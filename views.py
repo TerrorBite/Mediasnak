@@ -33,12 +33,13 @@ def upload_form(request):
     policy_str = simplejson.dumps({
         'expiration': expiry,
         'conditions': [
+            {'key': key},
             {'acl': 'private'},
             {'bucket': 's3.mediasnak.com'},
-            {'Content-Disposition': 'attachment; filename=${filename}'},
+            ['starts-with', '$Content-Disposition', 'inline; filename='],
             ['starts-with', '$Content-Type', ''],
-            {'success-action-redirect': 'http://www.mediasnak.com/success'},
-            {'key', key}
+            {'success_action_redirect': 'http://www.mediasnak.com/success'},
+	    ['starts-with', '$x-amz-meta-filename', '']
             ]
         })
 

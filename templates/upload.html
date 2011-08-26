@@ -9,7 +9,7 @@
 <input type="hidden" name="key" value="{{ key }}" />
 <input type="hidden" name="acl" value="private" />
 <input type="hidden" name="Content-Type" value="image/jpg" />
-<input type="hidden" name="Content-Disposition" value="attachment; filename=${filename}" />
+<input type="hidden" name="Content-Disposition" value="inline; filename=${filename}" />
 <input type="hidden" name="x-amz-meta-filename" value="${filename}" />
 <input type="hidden" name="success_action_redirect" value="http://www.mediasnak.com/success" />
 <input type="hidden" name="AWSAccessKeyId" value="{{ aws_id }}" />
