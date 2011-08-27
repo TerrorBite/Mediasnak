@@ -61,13 +61,14 @@ def sign_url(bucket, key, expiry=3600, method='GET', format=0, secure=False):
     
     # Work out the string to sign, and generate a signature from it. This string contains several parameters
     # including the HTTP verb (GET, POST, etc), the expiry time, and the path to the file.
-    signature = hmac_sign('{0}\n{1}\n{2}\n{3}\n{4}{5}'.format(method, content_md5, content_type, expiry, canon_headers, canon_path))
+    signature = hmac_sign('%s\n%s\n%s\n%s\n%s%s' % (method, content_md5, content_type, expiry, canon_headers, canon_path))
     
     # Work out our parameters. The urlencode method will safely encode the data into a URL-friendly format.
     params = urllib.urlencode({'AWSAccessKeyId': access_keys.key_id, 'Signature': signature, 'Expires': expiry})
     
     # Return the completed URL in either HTTP or HTTPS format.
-    return '{0}{1}{2}?{3}'.format('https://' if secure else 'http://', host, path, params)
+    #return '{0}{1}{2}?{3}'.format('https://' if secure else 'http://', host, path, params)
+    return '%s%s%s?%s' % format('https://' if secure else 'http://', host, path, params)
     
 def hmac_sign(s):
     """

@@ -1,5 +1,5 @@
 application: media-snak
-version: alpha2
+version: alpha3
 runtime: python
 api_version: 1
 
