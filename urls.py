@@ -17,4 +17,6 @@ urlpatterns = patterns('',
      {'path': 'favicon.ico', 'document_root' : homedir}),
     ('^icon.png$', 'django.views.static.serve',
      {'path': 'icon.png', 'document_root' : homedir}),
+    ('^style.css$', 'django.views.static.serve',
+     {'path': 'style.css', 'document_root' : homedir}),
 )
