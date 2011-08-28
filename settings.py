@@ -14,7 +14,7 @@ AUTOLOAD_SITECONF = 'indexes'
 SECRET_KEY = access_keys.secret
 
 INSTALLED_APPS = (
-#    'django.contrib.admin',
+    'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.auth',
     'django.contrib.sessions',
