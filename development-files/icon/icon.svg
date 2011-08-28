@@ -153,6 +153,13 @@
          k3="0"
          k4="0" />
     </filter>
+    <inkscape:perspective
+       id="perspective2910"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -165,7 +172,7 @@
      inkscape:cx="-144.05594"
      inkscape:cy="29.474918"
      inkscape:document-units="px"
-     inkscape:current-layer="layer3"
+     inkscape:current-layer="layer6"
      showgrid="false"
      inkscape:window-width="1366"
      inkscape:window-height="716"
@@ -202,6 +209,13 @@
        height="43.356644"
        width="41.258739"
        id="rect2898"
+       style="opacity:0;fill:#674811;fill-opacity:0.49411765;fill-rule:nonzero;stroke:none" />
+    <rect
+       y="87.41259"
+       x="-100"
+       height="43.356644"
+       width="55.944054"
+       id="rect2870"
        style="opacity:0;fill:#674811;fill-opacity:0.49411765;fill-rule:nonzero;stroke:none" />
   </g>
   <g
@@ -262,6 +276,32 @@
        sodipodi:start="1.598038"
        sodipodi:end="7.8766803"
        sodipodi:open="true" />
+    <path
+       sodipodi:open="true"
+       sodipodi:end="7.8766803"
+       sodipodi:start="1.598038"
+       transform="matrix(1.0449377,0,0,0.98502075,-68.714395,112.45591)"
+       d="m 0.95571072,28.43118 a 23.342175,23.342175 0 1 1 0.10601048,0.0026"
+       sodipodi:ry="23.342175"
+       sodipodi:rx="23.342175"
+       sodipodi:cy="5.0976663"
+       sodipodi:cx="1.591512"
+       id="path2872"
+       style="fill:#674811;fill-opacity:0.61170206;fill-rule:nonzero;stroke:none;display:inline;filter:url(#filter3667)"
+       sodipodi:type="arc" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#674811;fill-opacity:0.61170206;fill-rule:nonzero;stroke:none;display:inline;filter:url(#filter3667)"
+       id="path2874"
+       sodipodi:cx="1.591512"
+       sodipodi:cy="5.0976663"
+       sodipodi:rx="23.342175"
+       sodipodi:ry="23.342175"
+       d="m 0.95571072,28.43118 a 23.342175,23.342175 0 1 1 0.10601048,0.0026"
+       transform="matrix(2.2582552,0,0,0.61053962,-24.645403,100.22502)"
+       sodipodi:start="1.598038"
+       sodipodi:end="7.8766803"
+       sodipodi:open="true" />
   </g>
   <g
      inkscape:groupmode="layer"
@@ -278,7 +318,7 @@
          sodipodi:role="line"
          id="tspan2848"
          x="33.958603"
-         y="22.730404">edia</tspan></text>
+         y="22.730404">edia-</tspan></text>
     <text
        transform="matrix(0.99999404,0.00345227,-0.00345227,0.99999404,0,0)"
        id="text2904"
@@ -289,6 +329,17 @@
          y="-37.439747"
          x="-141.77464"
          id="tspan2906"
+         sodipodi:role="line">edia</tspan></text>
+    <text
+       transform="matrix(0.99999404,0.00345227,-0.00345227,0.99999404,0,0)"
+       id="text2876"
+       y="121.73189"
+       x="-63.602299"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#392809;fill-opacity:1;stroke:none;display:inline;font-family:Arial Black;-inkscape-font-specification:Arial Black"
+       xml:space="preserve"><tspan
+         y="121.73189"
+         x="-63.602299"
+         id="tspan2878"
          sodipodi:role="line">edia</tspan></text>
   </g>
   <g
@@ -341,6 +392,17 @@
          id="tspan2914"
          x="-7.2060723"
          y="-145.34605">M</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#392809;fill-opacity:1;stroke:none;font-family:Arial Black;-inkscape-font-specification:Arial Black"
+       x="-149.22403"
+       y="-30.429003"
+       id="text2884"
+       transform="matrix(0.21543843,-0.97651743,0.97651743,0.21543843,0,0)"><tspan
+         sodipodi:role="line"
+         id="tspan2886"
+         x="-149.22403"
+         y="-30.429003">M</tspan></text>
   </g>
   <g
      inkscape:label="S"
@@ -420,6 +482,17 @@
          x="-116.16399"
          sodipodi:role="line"
          id="tspan2930">ack</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:22px;font-style:normal;font-weight:normal;fill:#197311;fill-opacity:1;stroke:none;display:inline;font-family:Arial Black;-inkscape-font-specification:Arial Black"
+       x="-33.194302"
+       y="136.50078"
+       id="text2898"
+       transform="matrix(0.97768053,0.21009707,-0.21009707,0.97768053,0,0)"><tspan
+         id="tspan2900"
+         sodipodi:role="line"
+         x="-33.194302"
+         y="136.50078"> Snak</tspan></text>
   </g>
   <g
      inkscape:groupmode="layer"
@@ -435,5 +508,14 @@
        y="9.4367073e-07"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
+    <rect
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       y="94.405594"
+       x="-93.706291"
+       height="51.748253"
+       width="125.17484"
+       id="rect2896"
+       style="opacity:0;fill:#674811;fill-opacity:0.61170206;fill-rule:nonzero;stroke:none" />
   </g>
 </svg>
