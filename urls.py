@@ -10,8 +10,8 @@ urlpatterns = patterns('',
     ('^_ah/warmup$', 'djangoappengine.views.warmup'),
     ('^$', 'django.views.generic.simple.direct_to_template', {'template': 'home.html'}),
     
-    ('^upload$', 'views.upload_form', {}),
-    ('^success$', 'views.upload_success', {}),
+    ('^upload$', 'msnak.views.upload_form', {}),
+    ('^success$', 'msnak.views.upload_success', {}),
 
     ('^favicon.ico$', 'django.views.static.serve',
      {'path': 'favicon.ico', 'document_root' : homedir}),

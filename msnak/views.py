@@ -11,7 +11,7 @@ from django.utils import simplejson
 from random import randrange
 from base64 import urlsafe_b64encode, b64encode
 from datetime import datetime, timedelta
-from s3util import hmac_sign
+from msnak.s3util import hmac_sign
 
 def upload_form(request):
     "Produces an upload form for submitting files to S3."
