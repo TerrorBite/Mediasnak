@@ -23,7 +23,7 @@ def upload_form(request):
     uniq = urlsafe_b64encode(''.join([chr(randrange(255)) for x in xrange(8)]))[:11]
 
     # Put together a key
-    key = 'u/{0}/{1}'.format(user_id, uniq)
+    key = 'u/%d/%s' % (user_id, uniq)
 
     # Expiry date string in ISO8601 GMT format, one hour in the future:
     expiry = (datetime.utcnow() + timedelta(hours=1)).isoformat()+'Z'
