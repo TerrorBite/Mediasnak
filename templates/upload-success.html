@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Success{% endblock %}
+
+{% block content %}
+<h1>Success</h1>
+<p>Your file has been uploaded.</p>
+<p>The values sent back from s3 were:
+<div><pre>
+bucket = {{ bucket }}
+key = {{key}}
+etag = {{etag}}
+</pre></div>
+</p>
+<p>
+development suggestions for this page - could just return to the upload page
+</p>
+{% endblock %}

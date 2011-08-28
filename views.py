@@ -50,9 +50,9 @@ def upload_form(request):
     return render_to_response('upload.html', {'key': key, 'aws_id': access_keys.key_id, 'policy': policy, 'signature': signature})
 
 def upload_success(request):
-    bucket = HttpRequest.GET['bucket']
-    key = HttpRequest.GET['key']
-    etag = HttpRequest.GET['etag']
+    bucket = request.GET['bucket']
+    key = request.GET['key']
+    etag = request.GET['etag']
 
     # Use render_to_response shortcut to fill out the upload.html template
-    return render_to_response('upload.html', {  })
+    return render_to_response('upload-success.html', {'bucket': bucket, 'key': key, 'etag': etag})
