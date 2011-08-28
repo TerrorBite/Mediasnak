@@ -68,7 +68,7 @@ def sign_url(bucket, key, expiry=3600, method='GET', format=0, secure=False):
     
     # Return the completed URL in either HTTP or HTTPS format.
     #return '{0}{1}{2}?{3}'.format('https://' if secure else 'http://', host, path, params)
-    return '%s%s%s?%s' % format('https://' if secure else 'http://', host, path, params)
+    return '%s%s%s?%s' % ('https://' if secure else 'http://', host, path, params)
     
 def hmac_sign(s):
     """
