@@ -13,10 +13,15 @@ urlpatterns = patterns('',
     ('^upload$', 'msnak.views.upload_form', {}),
     ('^success$', 'msnak.views.upload_success', {}),
 
+    # Static files
     ('^favicon.ico$', 'django.views.generic.simple.redirect_to',
         {'url': 'http://s3.mediasnak.com/assets/favicon.ico', 'permanent' : True}),
     ('^robots.txt$', 'django.views.static.serve',
      {'path': 'static/robots.txt', 'document_root' : homedir}),
     ('^style.css$', 'django.views.static.serve',
      {'path': 'static/style.css', 'document_root' : homedir}),
+
+    # Development
+    ('^test-databases$', 'msnak.dev_views.test_databases', {}),
+    ('^view-mediafile-table$', 'msnak.dev_views.view_mediafile_model', {}),
 )

@@ -2,7 +2,7 @@ from django.db import models as m
 
 class User(m.Model):
     user_id = m.IntegerField()
-    username - m.CharField(max_length=32)
+    username = m.CharField(max_length=32)
     passwd_hash = m.CharField(max_length=40)
     passwd_salt = m.CharField(max_length=40)
 

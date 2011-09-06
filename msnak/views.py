@@ -12,6 +12,7 @@ from random import randrange
 from base64 import urlsafe_b64encode, b64encode
 from datetime import datetime, timedelta
 from msnak.s3util import hmac_sign
+from models import MediaFile # Database table for files
 
 def upload_form(request):
     "Produces an upload form for submitting files to S3."
@@ -25,9 +26,16 @@ def upload_form(request):
     # Put together a key
     key = 'u/%s' % (uniq,)
 
+    # Save the key in the database, so that we can match it up when the upload is finished
+    # and also ensure it was a valid upload
+    # The filename, upload time and view count will be filled in later (just setting upload time to the current time for now)
+    # User ID may also be checked later
+    file_entry = MediaFile(file_id=key, user_id=user_id, filename='', upload_time=datetime.utcnow(), view_count=0)
+    file_entry.save()
+
     # Expiry date string in ISO8601 GMT format, one hour in the future:
     expiry = (datetime.utcnow() + timedelta(hours=1)).isoformat()+'Z'
-    
+
     # Construct policy string from JSON. This ensures that if the user tries something sneaky such as
     # altering the hidden form fields, then the upload will be rejected.
     policy_str = simplejson.dumps({
@@ -46,13 +54,58 @@ def upload_form(request):
     policy = b64encode(policy_str.encode('utf8'))
     signature = hmac_sign(policy)
 
-    # Use render_to_response shortcut to fill out the upload.html template
+    # Use render_to_response to fill out the upload.html template
     return render_to_response('upload.html', {'key': key, 'aws_id': access_keys.key_id, 'policy': policy, 'signature': signature})
 
 def upload_success(request):
-    bucket = request.GET['bucket']
-    key = request.GET['key']
-    etag = request.GET['etag']
+    "Handles the return process from S3 upload produced by upload_form and returns a success page to the user."
+
+    error = '' # this will hold an error message if we need one to put in the template
+
+    bucket = request.GET['bucket'] # unused, could check that it is equal to s3.mediasnak.com
+    key = request.GET['key'] # this was created when upload page was requested
+    etag = request.GET['etag'] # unused
+    file_id = key
+
+    # get logged-in user
+    user_id = 0
+
+    # check database that this matches a valid upload
+    try:
+        file_entry = MediaFile.objects.get(file_id=file_id)
+    except MediaFile.DoesNotExist:
+        # if the entry hasn't been created yet ...
+        error = "<h3>There was an error:</h3>" + \
+                "<p>There seems to have been no file set-up for this upload.</p>"
+        # What to do now?
+        # Either user could re-upload the file,
+        # or the system could simply create the file_id now instead assuming there's no reason not to
+    except MediaFile.MultipleObjectsReturned:
+        error = "<h3>There was an error:</h3>" + \
+                "<p>Apparently this file's ID has already finished uploading before.</p>"
+
+    # could check the file upload belongs to this user
+    if file_entry.user_id != user_id:
+        error = "<h3>There was an error:</h3>" + \
+                "<p>Apparently this file upload wasn't requested by the logged-in user.</p>"
+
+    # extract filename from s3
+    # ..use key, or etag?
+    filename = "foo"
+    upload_time = datetime.utcnow()
+
+    # Set the file status as uploaded in database
+    file_entry.filename=filename
+    file_entry.upload_time=upload_time
+    file_entry.save()
+    # Now everything for the file entry except view_count should now be filled in
+
+    # Get the information for this file (which was just saved)
+    # file_entry = MediaFile.objects.get(file_id=file_id)
 
     # Use render_to_response shortcut to fill out the upload.html template
-    return render_to_response('upload-success.html', {'bucket': bucket, 'key': key, 'etag': etag})
+    template_vars = {
+        'bucket': bucket, 'key': key, 'etag': etag,
+        'upload_time': upload_time, 'file_id': file_id, 'user_id': user_id, 'filename': filename
+    }
+    return render_to_response('upload-success.html', template_vars)
