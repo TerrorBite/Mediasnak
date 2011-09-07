@@ -125,6 +125,8 @@ def upload_success(request):
     if filename is None:
         return render_to_response('base.html', { 'error': 'There was an error, the remote metadata on this file couldn\'t be found' })
 
+    # check that this etag matches this key?    
+    
     upload_time = datetime.utcnow()
 
     # Set the file status as uploaded in database
