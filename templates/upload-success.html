@@ -4,7 +4,7 @@
 
 {% block content %}
 <h1>Success</h1>
-<p>Your file has been uploaded.</p>
+<p>The '{{ filename }}' file was uploaded under the ID '<code>{{ file_id }}</code>' on {{ upload_time }}.</p>
 <p>The values sent back from s3 were:
 <div><pre>
 bucket = {{ bucket }}
@@ -13,6 +13,6 @@ etag = {{ etag }}
 </pre></div>
 </p>
 <p>
-development suggestions for this page - could just return to the upload page with a new django 'info' message
+Development suggestions for this page - could just return to the upload or file-list page with a new django 'info' message
 </p>
 {% endblock %}

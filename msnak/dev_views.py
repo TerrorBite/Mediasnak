@@ -50,4 +50,25 @@ def view_mediafile_model(request):
     content += '</body>';
     
     return HttpResponse(content)
-    # return render_to_response('base.html', { 'title': 'Contents of the file database table', 'content': content }) # won't work, 'content' is a block, not a variable
+
+def show_filename(request):
+
+    key = request.GET['key']
+
+    from boto.s3.connection import S3Connection
+
+    # The keys can be set as environment variables instead
+    botoconn = S3Connection(access_keys.key_id, access_keys.secret)
+    bucket = botoconn.create_bucket('s3.mediasnak.com')
+
+    file = bucket.get_key(key)
+    if file is None:
+        return render_to_response('base.html', { 'error': 'This file key is invalid!' })
+
+    filename = file.get_metadata('filename')
+    if filename is None:
+        return render_to_response('base.html', { 'error': 'There was an error, the remote metadata on this file couldn\'t be found' })
+
+    content = 'key - ' + key + '<br> filename - ' + filename
+
+    return HttpResponse(content)

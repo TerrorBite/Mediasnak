@@ -24,4 +24,5 @@ urlpatterns = patterns('',
     # Development
     ('^test-databases$', 'msnak.dev_views.test_databases', {}),
     ('^view-mediafile-table$', 'msnak.dev_views.view_mediafile_model', {}),
+    ('^filenametest$', 'msnak.dev_views.show_filename', {}),
 )

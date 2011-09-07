@@ -13,6 +13,7 @@ from base64 import urlsafe_b64encode, b64encode
 from datetime import datetime, timedelta
 from msnak.s3util import hmac_sign
 from models import MediaFile # Database table for files
+from django import http
 
 def upload_form(request):
     "Produces an upload form for submitting files to S3."
@@ -25,13 +26,6 @@ def upload_form(request):
 
     # Put together a key
     key = 'u/%s' % (uniq,)
-
-    # Save the key in the database, so that we can match it up when the upload is finished
-    # and also ensure it was a valid upload
-    # The filename, upload time and view count will be filled in later (just setting upload time to the current time for now)
-    # User ID may also be checked later
-    file_entry = MediaFile(file_id=key, user_id=user_id, filename='', upload_time=datetime.utcnow(), view_count=0)
-    file_entry.save()
 
     # Expiry date string in ISO8601 GMT format, one hour in the future:
     expiry = (datetime.utcnow() + timedelta(hours=1)).isoformat()+'Z'
@@ -62,6 +56,10 @@ def upload_success(request):
 
     error = '' # this will hold an error message if we need one to put in the template
 
+    # If they don't have the S3 return values, just send them to the upload page
+    if not ('bucket' in request.GET and 'key' in request.GET and 'etag' in request.GET) :
+        return http.HttpResponseRedirect('upload')
+
     bucket = request.GET['bucket'] # unused, could check that it is equal to s3.mediasnak.com
     key = request.GET['key'] # this was created when upload page was requested
     etag = request.GET['etag'] # unused
@@ -69,6 +67,13 @@ def upload_success(request):
 
     # get logged-in user
     user_id = 0
+    
+    # Save the key in the database, so that we can match it up when the upload is finished
+    # and also ensure it was a valid upload
+    # The filename, upload time and view count will be filled in later (just setting upload time to the current time for now)
+    # User ID may also be checked later
+    file_entry = MediaFile(file_id=key, user_id=user_id, filename='', upload_time=datetime.utcnow(), view_count=0)
+    file_entry.save()
 
     # check database that this matches a valid upload
     try:
@@ -80,18 +85,46 @@ def upload_success(request):
         # What to do now?
         # Either user could re-upload the file,
         # or the system could simply create the file_id now instead assuming there's no reason not to
+        template_vars = {
+            'error': error
+        }
+        return render_to_response('base.html', template_vars)
     except MediaFile.MultipleObjectsReturned:
         error = "<h3>There was an error:</h3>" + \
                 "<p>Apparently this file's ID has already finished uploading before.</p>"
+        template_vars = {
+            'error': error,
+            'bucket': bucket, 'key': key, 'etag': etag,
+            'file_id': file_id, 'user_id': user_id
+        }
+        return render_to_response('upload-success.html', template_vars)
 
     # could check the file upload belongs to this user
     if file_entry.user_id != user_id:
         error = "<h3>There was an error:</h3>" + \
                 "<p>Apparently this file upload wasn't requested by the logged-in user.</p>"
 
+    # Make sure this file-id hasn't been already used for another file somehow?
+    # for instance, if the user reloads the page, the file information will be overridden
+
     # extract filename from s3
     # ..use key, or etag?
-    filename = "foo"
+    key = request.GET['key']
+    #
+    from boto.s3.connection import S3Connection
+    #
+    # The keys can be set as environment variables instead
+    botoconn = S3Connection(access_keys.key_id, access_keys.secret)
+    bucket = botoconn.create_bucket('s3.mediasnak.com')
+    #
+    file = bucket.get_key(key)
+    if file is None:
+        return render_to_response('base.html', { 'error': 'This file key is invalid!' })
+    #
+    filename = file.get_metadata('filename')
+    if filename is None:
+        return render_to_response('base.html', { 'error': 'There was an error, the remote metadata on this file couldn\'t be found' })
+
     upload_time = datetime.utcnow()
 
     # Set the file status as uploaded in database
