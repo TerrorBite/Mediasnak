@@ -1,3 +1,5 @@
+# coding: utf8
+
 """
 Mediasnak Django Views
 
@@ -48,7 +50,7 @@ def upload_form(request):
     policy = b64encode(policy_str.encode('utf8'))
     signature = hmac_sign(policy)
 
-    # Use render_to_response to fill out the upload.html template
+    # Use render_to_response to fill out the HTML template
     return render_to_response('upload.html', {'key': key, 'aws_id': access_keys.key_id, 'policy': policy, 'signature': signature})
 
 def upload_success(request):
@@ -60,7 +62,11 @@ def upload_success(request):
     if not ('bucket' in request.GET and 'key' in request.GET and 'etag' in request.GET) :
         return http.HttpResponseRedirect('upload')
 
-    bucket = request.GET['bucket'] # unused, could check that it is equal to s3.mediasnak.com
+    bucketname = request.GET['bucket']
+    if bucketname != 's3.mediasnak.com': # 'magic-string', could maybe put in S3utils
+        error = "<h3>There was an error:</h3>" + \
+                "<p>Apparently somehow this file was uploaded to the wrong bucket or the wrong bucket is being returned.</p>"
+        return render_to_response('base.html', { 'error': error })
     key = request.GET['key'] # this was created when upload page was requested
     etag = request.GET['etag'] # unused
     file_id = key
@@ -90,11 +96,13 @@ def upload_success(request):
         }
         return render_to_response('base.html', template_vars)
     except MediaFile.MultipleObjectsReturned:
+        ## this error will be reached if the user goes back and tries to upload again ##
+        # means a file may be overridden in s3
         error = "<h3>There was an error:</h3>" + \
                 "<p>Apparently this file's ID has already finished uploading before.</p>"
         template_vars = {
             'error': error,
-            'bucket': bucket, 'key': key, 'etag': etag,
+            'bucket': bucketname, 'key': key, 'etag': etag,
             'file_id': file_id, 'user_id': user_id
         }
         return render_to_response('upload-success.html', template_vars)
@@ -115,7 +123,7 @@ def upload_success(request):
     #
     # The keys can be set as environment variables instead
     botoconn = S3Connection(access_keys.key_id, access_keys.secret)
-    bucket = botoconn.create_bucket('s3.mediasnak.com')
+    bucket = botoconn.create_bucket(bucketname)
     #
     file = bucket.get_key(key)
     if file is None:
@@ -137,10 +145,52 @@ def upload_success(request):
 
     # Get the information for this file (which was just saved)
     # file_entry = MediaFile.objects.get(file_id=file_id)
-
-    # Use render_to_response shortcut to fill out the upload.html template
+    
+    import s3util
+    #url = s3util.sign_url(bucket, key)
+    # strange there's no way to get the bucket name from a bucket object
+    # also, is it sent back by Amazon?
+    # we need to make a global for this magic-value
+    url = s3util.sign_url(bucketname, key)
+    
+    # Use render_to_response shortcut to fill out the HTML template
     template_vars = {
-        'bucket': bucket, 'key': key, 'etag': etag,
+        'url': url,
+        'bucket': bucketname, 'key': key, 'etag': etag,
         'upload_time': upload_time, 'file_id': file_id, 'user_id': user_id, 'filename': filename
     }
     return render_to_response('upload-success.html', template_vars)
+
+def download_page(request):
+    "Displays a page with a link to download a file, or redirects to the download itself."
+    # The friendly download link isn't necessarily part of a story, but is good functionality atleast for our use
+    
+    #if 'page' in request.GET:
+    #    if request.GET['page'] == True:
+    #        # then don't redirect, else redirect
+    #        pass
+    
+    bucketname = 's3.mediasnak.com'
+    
+    if 'filename' not in request.GET:
+        return render_to_response('download.html', { 'error': 'error, no filename specified' })
+        # redirect to homepage or something
+    filename = request.GET['filename']
+    
+    try:
+        file_entry = MediaFile.objects.get(filename=filename)
+    except MediaFile.DoesNotExist:
+        error = "<h3>There was an error:</h3>" + \
+                "<p>There seems to have been no file by this name.</p>"
+        # Essentially a 404, what else could we do with the return?
+        return render_to_response('base.html', { 'error': error })
+    except MediaFile.MultipleObjectsReturned:
+        pass
+    
+    key = file_entry.file_id
+    
+    import s3util
+    url = s3util.sign_url(bucketname, key)
+    
+    # Use render_to_response shortcut to fill out the HTML template
+    return render_to_response('download.html', { 'url': url })

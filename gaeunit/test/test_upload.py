@@ -10,6 +10,9 @@ class TestUpload(TestCase):
     def setUp(self):
         self.c = Client()
 
+    # Must test to see that the key that gets returned each upload-request is different
+    # Cue: Refactoring into seperate functions
+        
     def testRequestUploadPage(self):
         "Test the upload page exists"
         response = self.c.get('/upload', {})
@@ -85,6 +88,27 @@ class TestUpload(TestCase):
 
     # ACCEPTANCE CRITERIA, STORY 1
     def testPerformUploadImage(self):
+        #Acceptance Criteria
+        # A 'browse' option is shown to find the file
+        # File is located on the server
+        # File is handled using secure protocols, such as  https 
+        
+        response = self.c.get('/upload', {})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual('<input type="file" ' in response.content, True)
+        
+        #upload
+        _filename = "test.txt"
+        
+        self.assertNotEqual(MediaFile.objects.get(filename="test.txt"), None)
+        
+        from boto.s3.connection import S3Connection
+        botoconn = S3Connection(access_keys.key_id, access_keys.secret)
+        bucket = botoconn.create_bucket('s3.mediasnak.com')
+        file = bucket.get_key(key)
+        self.assertNotEqual(file, None)
+        self.assertEqual(file.get_metadata('filename'), _filename)
+        
         pass
         
     # ACCEPTANCE CRITERIA, STORY 2

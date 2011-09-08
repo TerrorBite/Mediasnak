@@ -5,6 +5,8 @@
 {% block content %}
 <h1>Success</h1>
 <p>The '{{ filename }}' file was uploaded under the ID '<code>{{ file_id }}</code>' on {{ upload_time }}.</p>
+<h1>Download</h1>
+<p>File can be downloaded from here: <a href="{{ url }}">{{ filename }}</a></p>
 <p>The values sent back from s3 were:
 <div><pre>
 bucket = {{ bucket }}
