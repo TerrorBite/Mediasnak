@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Success{% endblock %}
+
+{% block content %}
+<h1>Success</h1>
+<p>The '{{ filename }}' file was uploaded under the ID '<code>{{ file_id }}</code>' on {{ upload_time }}.</p>
+<h1>Download</h1>
+<p>File can be downloaded from here: <a href="{{ url }}">{{ filename }}</a></p>
+<p>The values sent back from s3 were:
+<div><pre>
+bucket = {{ bucket }}
+key = {{ key }}
+etag = {{ etag }}
+</pre></div>
+</p>
+<p>
+Development suggestions for this page - could just return to the upload or file-list page with a new django 'info' message
+</p>
+{% endblock %}

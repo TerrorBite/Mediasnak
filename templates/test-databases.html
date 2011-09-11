@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Database Test{% endblock %}
+
+{% block content %}
+<h1>Database Test</h1>
+<p>The database results:
+<div><pre>
+file_id = {{ file_id }}
+user_id = {{ user_id }}
+filename = {{ filename }}
+upload_time = {{ upload_time }}
+view_count = {{ view_count }}
+</pre></div>
+</p>
+{% endblock %}

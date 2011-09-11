@@ -8,11 +8,23 @@ handler500 = 'djangotoolbox.errorviews.server_error'
 
 urlpatterns = patterns('',
     ('^_ah/warmup$', 'djangoappengine.views.warmup'),
-    ('^$', 'django.views.generic.simple.direct_to_template',
-     {'template': 'home.html'}),
-     
-    ('^upload$', 'views.upload_form',
-     {}),
-    ('^favicon.ico$', 'django.views.static.serve',
-     {'path': 'favicon.ico', 'document_root' : homedir}),
+    ('^$', 'django.views.generic.simple.direct_to_template', {'template': 'home.html'}),
+    
+    ('^upload$', 'msnak.views.upload_form', {}),
+    ('^success$', 'msnak.views.upload_success', {}),
+    ('^download$', 'msnak.views.download_page', {}),
+
+    # Static files
+    ('^favicon.ico$', 'django.views.generic.simple.redirect_to',
+        {'url': 'http://s3.mediasnak.com/assets/favicon.ico', 'permanent' : True}),
+    ('^robots.txt$', 'django.views.static.serve',
+     {'path': 'static/robots.txt', 'document_root' : homedir}),
+    ('^style.css$', 'django.views.static.serve',
+     {'path': 'static/style.css', 'document_root' : homedir}),
+
+    # Development
+    (r'^test', include('gaeunit.urls')),
+    ('^test-databases$', 'msnak.dev_views.test_databases', {}),
+    ('^view-mediafile-table$', 'msnak.dev_views.view_mediafile_model', {}),
+    ('^filenametest$', 'msnak.dev_views.show_filename', {}),
 )
