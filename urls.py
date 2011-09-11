@@ -13,6 +13,10 @@ urlpatterns = patterns('',
     ('^upload$', 'msnak.views.upload_form', {}),
     ('^success$', 'msnak.views.upload_success', {}),
     ('^download$', 'msnak.views.download_page', {}),
+    
+    
+    ('^filelist$', 'django.views.generic.simple.direct_to_template', {'template': 'filelist.html'}),
+    
 
     # Static files
     ('^favicon.ico$', 'django.views.generic.simple.redirect_to',
