@@ -14,8 +14,7 @@ urlpatterns = patterns('',
     ('^success$', 'msnak.views.upload_success', {}),
     ('^download$', 'msnak.views.download_page', {}),
     
-    
-    ('^filelist$', 'django.views.generic.simple.direct_to_template', {'template': 'filelist.html'}),
+    ('^files$', 'msnak.views.list_files_page', {}),
     
 
     # Static files
@@ -27,7 +26,7 @@ urlpatterns = patterns('',
      {'path': 'static/style.css', 'document_root' : homedir}),
 
     # Development
-    (r'^test', include('gaeunit.urls')),
+    (r'^test$', include('gaeunit.urls')),
     ('^test-databases$', 'msnak.dev_views.test_databases', {}),
     ('^view-mediafile-table$', 'msnak.dev_views.view_mediafile_model', {}),
     ('^filenametest$', 'msnak.dev_views.show_filename', {}),

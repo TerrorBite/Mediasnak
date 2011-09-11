@@ -16,6 +16,7 @@ from datetime import datetime, timedelta
 from msnak.s3util import hmac_sign
 from models import MediaFile # Database table for files
 from django import http
+import s3util
 
 def upload_form(request):
     "Produces an upload form for submitting files to S3."
@@ -118,20 +119,7 @@ def upload_success(request):
     # extract filename from s3
     # ..use key, or etag?
     key = request.GET['key']
-    #
-    from boto.s3.connection import S3Connection
-    #
-    # The keys can be set as environment variables instead
-    botoconn = S3Connection(access_keys.key_id, access_keys.secret)
-    bucket = botoconn.create_bucket(bucketname)
-    #
-    file = bucket.get_key(key)
-    if file is None:
-        return render_to_response('base.html', { 'error': 'This file key is invalid!' })
-    #
-    filename = file.get_metadata('filename')
-    if filename is None:
-        return render_to_response('base.html', { 'error': 'There was an error, the remote metadata on this file couldn\'t be found' })
+    filename = s3util.get_metadata_from_s3(bucketname, key, 'filename')
 
     # check that this etag matches this key?    
     
@@ -146,7 +134,6 @@ def upload_success(request):
     # Get the information for this file (which was just saved)
     # file_entry = MediaFile.objects.get(file_id=file_id)
     
-    import s3util
     #url = s3util.sign_url(bucket, key)
     # strange there's no way to get the bucket name from a bucket object
     # also, is it sent back by Amazon?
@@ -194,3 +181,43 @@ def download_page(request):
     
     # Use render_to_response shortcut to fill out the HTML template
     return render_to_response('download.html', { 'url': url })
+
+def list_files_page(request):
+    "Displays the page with a list of all the user's files"
+
+    # This might be useful, to use the same page to list files in a category, or even for searches
+    # category = request.GET['category']
+
+    user_id = 0
+    bucketname = "s3.mediasnak.com"
+
+    file_entries = MediaFile.objects.filter(user_id=user_id) # what exceptions might this raise?
+    
+    # file_list_entries is the file information which will be used by the template
+    file_list_entries = []
+    filenames = []
+    for file in file_entries:
+        file_list_entries.append(
+            {
+            'file_id' : file.file_id, # can be used in a URL to access the information page for this file
+            'download_url' : s3util.sign_url(bucketname, file.file_id),
+            'name' : file.filename,
+            'upload_time' : file.upload_time,
+            'view_count' : file.view_count
+            }
+        )
+        # alternative dictionary syntax, apparently
+        # dict(
+        # file_id = file.file_id, # can be used in a URL to access the information page for this file
+        # download_url = s3util.sign_url(bucketname, file.file_id),
+        # name = file.filename,
+        # upload_time = file.upload_time,
+        # view_count = file.view_count
+        # )
+    
+    # Use render_to_response shortcut to fill out the HTML template
+    template_vars = {
+        'info': 'testinfo',
+        'file_list_entries': file_list_entries
+    }
+    return render_to_response('filelist.html', template_vars)

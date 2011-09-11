@@ -3,11 +3,43 @@
 {% block title %}INB372 Test{% endblock %}
 
 {% block extra-head %}
-<META http-equiv=Content-Type content="text/html; charset=gb2312">
-<LINK href="images/main.css" type=text/css rel=stylesheet>
+<meta http-equiv=Content-Type content="text/html; charset=gb2312">
+<link href="images/main.css" type=text/css rel=stylesheet>
 {% endblock %}
 
 {% block content %}
+<div class="filelist">
+{% for f in file_list_entries %}
+    <div class="fileentry">
+        <span class="filename">
+            {{ f.name }}
+        </span>
+        <span class="fileuploadtime">
+            {{ f.upload_time }}
+        </span>
+        <span class="fileviewcount">
+            {{ f.view_count }}
+        </span>
+        <span class="fileurl">
+            <a href="{{ f.download_url }}">download {{ f.name }}</a>
+        </span>
+        <span class="fileinfourl">
+            <a href="file-details?fileid={{ f.file_id }}">{{ f.name }} details</a>
+        </span>
+    </div>
+{% empty %}
+    There are no files to display!
+{% endfor %}
+</div>
+
+
+
+...
+
+
+
+
+
 <CENTER>
 <TABLE cellSpacing=0 cellPadding=0 width=778 bgColor=#ffffff 
 background=images/top1bg.jpg border=0>
@@ -31,71 +63,71 @@ bgColor=#ffffff border=0>
         <TR>
           <TD 
           onclick="this.style.behavior='url(#default#homepage)';this.setHomePage('http://www.23sc.cn')" 
-          height=25>◇ <A title=设为首页 style="COLOR: #ff6600" 
+          height=25><A title=閻犱礁褰炵拹鐔革純閺嶎厹鈧?style="COLOR: #ff6600" 
             href="http://www.23sc.cn">Set Main page </A> 
 </TD>
         </TR>
         <TR>
           <TD 
-          onclick="window.external.AddFavorite('http://www.23sc.cn','友才网')" 
-          height=25>◇ <A title=加入收藏 style="COLOR: #ff6600" 
+          onclick="window.external.AddFavorite('http://www.23sc.cn','闁告瑥顑嗘晶鐘电磾?)" 
+          height=25><A title=闁告梻濮撮崣鍡涘绩閹増顥?style="COLOR: #ff6600" 
             href="http://www.23sc.cn">Add to faviorte </A></TD>
         </TR>
         <TR>
-          <TD height=25>◇ Contact us </TD>
+          <TD height=25>Contact us </TD>
   </TR></TBODY></TABLE></TD></TR></TBODY></TABLE>
 <TABLE class=center style="FONT-SIZE: 5px" height=5 cellSpacing=0 cellPadding=0 
 width=778 bgColor=#ffffff border=0>
   <TBODY>
   <TR>
-    <TD width=88><IMG title=深圳市友才电子商务中心 height=5 alt=深圳市友才电子商务中心 
+    <TD width=88><IMG title=婵烇絽宕﹢椋庢暜閸屾艾鍑犻柟闈涚Ф閺佸摜鈧稒鍔曢弲銏ゅ礉閳ヨ尪鍘煫?height=5 alt=婵烇絽宕﹢椋庢暜閸屾艾鍑犻柟闈涚Ф閺佸摜鈧稒鍔曢弲銏ゅ礉閳ヨ尪鍘煫?
       src="images/topbt5.gif" width=88></TD>
-    <TD width=86><IMG title=深圳网站建设 height=5 alt=深圳网站建设 
+    <TD width=86><IMG title=婵烇絽宕﹢椋庣磾閹寸姷褰茬€点倝缂氶?height=5 alt=婵烇絽宕﹢椋庣磾閹寸姷褰茬€点倝缂氶?
       src="images/topbt2.gif" width=86></TD>
-    <TD width=86><IMG title=深圳网站推广 height=5 alt=深圳网站推广 
+    <TD width=86><IMG title=婵烇絽宕﹢椋庣磾閹寸姷褰查柟鎭掑妼缁?height=5 alt=婵烇絽宕﹢椋庣磾閹寸姷褰查柟鎭掑妼缁?
       src="images/topbt3.gif" width=86></TD>
-    <TD width=86><IMG title=深圳域名注册 height=5 alt=深圳域名注册 
+    <TD width=86><IMG title=婵烇絽宕﹢鐑藉春閻旈攱鍊虫繛澶堝妼閸?height=5 alt=婵烇絽宕﹢鐑藉春閻旈攱鍊虫繛澶堝妼閸?
       src="images/topbt4.gif" width=86></TD>
-    <TD width=86><IMG title=深圳虚拟主机 height=5 alt=深圳虚拟主机 
+    <TD width=86><IMG title=婵烇絽宕﹢鐑芥惞濮橆厼鐝☉鎾剁帛濠р偓 height=5 alt=婵烇絽宕﹢鐑芥惞濮橆厼鐝☉鎾剁帛濠р偓 
       src="images/topbt1.gif" width=86></TD>
-    <TD width=86><IMG title=深圳企业邮局 height=5 alt=深圳企业邮局 
+    <TD width=86><IMG title=婵烇絽宕﹢閿嬪娴ｉ鐟归梺顓у枛閻?height=5 alt=婵烇絽宕﹢閿嬪娴ｉ鐟归梺顓у枛閻?
       src="images/topbt2.gif" width=86></TD>
-    <TD width=86><IMG title=深圳友才网客户服务 height=5 alt=深圳友才网客户服务 
+    <TD width=86><IMG title=婵烇絽宕﹢鐑藉矗鐎ｎ偄顤呯紓鍐╁灥椤撳綊骞嬮柨瀣疀闁?height=5 alt=婵烇絽宕﹢鐑藉矗鐎ｎ偄顤呯紓鍐╁灥椤撳綊骞嬮柨瀣疀闁?
       src="images/topbt3.gif" width=86></TD>
-    <TD width=86><IMG title=深圳友才网代理合作 height=5 alt=深圳友才网代理合作 
+    <TD width=86><IMG title=婵烇絽宕﹢鐑藉矗鐎ｎ偄顤呯紓鍐╁灣閸烆剟鎮堕崱妤佸€ゅù?height=5 alt=婵烇絽宕﹢鐑藉矗鐎ｎ偄顤呯紓鍐╁灣閸烆剟鎮堕崱妤佸€ゅù?
       src="images/topbt4.gif" width=86></TD>
-    <TD width=88><IMG title=深圳友才上网导航 height=5 alt=深圳友才上网导航 
+    <TD width=88><IMG title=婵烇絽宕﹢鐑藉矗鐎ｎ偄顤呭☉鎾筹功缂嶅鈧絻澹堥崺?height=5 alt=婵烇絽宕﹢鐑藉矗鐎ｎ偄顤呭☉鎾筹功缂嶅鈧絻澹堥崺?
       src="images/topbt5.gif" width=88></TD></TR></TBODY></TABLE>
 <TABLE class=center cellSpacing=0 cellPadding=0 width=778 bgColor=#ffffff 
 border=0>
   <TBODY>
   <TR>
     <TD width=1 bgColor=#b0b0b0></TD>
-    <TD width=87 height=25><A title=友才网 
+    <TD width=87 height=25><A title=闁告瑥顑嗘晶鐘电磾?
       href="#">Main</A></TD>
     <TD width=1 bgColor=#b0b0b0></TD>
-    <TD width=85><A title=网站建设 
+    <TD width=85><A title=缂傚啯鍨归悵顖氼嚈妤︽鍟?
       href="#">1</A></TD>
     <TD width=1 bgColor=#b0b0b0></TD>
-    <TD width=85><A title=网站推广 
+    <TD width=85><A title=缂傚啯鍨归悵顖炲箳閵娿儳鐣?
       href="#">2</A></TD>
     <TD width=1 bgColor=#b0b0b0></TD>
-    <TD width=85><A title=域名注册 
+    <TD width=85><A title=闁糕晝鍠庨幃鏇炩枖閵娿儱鏂€ 
       href="#">3</A></TD>
     <TD width=1 bgColor=#b0b0b0></TD>
-    <TD width=85><A title=虚拟主机 
+    <TD width=85><A title=闁惧繑纰嶇€氭瑦绋夌紒妯荤皻 
       href="#">4</A></TD>
     <TD width=1 bgColor=#b0b0b0></TD>
-    <TD width=85><A title=企业邮局 
+    <TD width=85><A title=濞撮棿妞掔粭鐔兼焽椤旇偐婀?
       href="#">5</A></TD>
     <TD width=1 bgColor=#b0b0b0></TD>
-    <TD width=85><A title=客户服务 
+    <TD width=85><A title=閻庡箍鍨洪崺娑㈠嫉瀹ュ懎顫?
       href="#">6</A></TD>
     <TD width=1 bgColor=#b0b0b0></TD>
-    <TD width=85><A title=代理合作 
+    <TD width=85><A title=濞寸媴绲块幃濠囧触閸粎绋?
       href="#">7</A></TD>
     <TD width=1 bgColor=#b0b0b0></TD>
-    <TD width=86><A title=论坛交流 href="#" 
+    <TD width=86><A title=閻犱礁鎼褎绂嶉妶鍡欍偊 href="#" 
       target=_blank>8</A></TD>
     <TD width=1 bgColor=#b0b0b0></TD></TR>
   <TR>
@@ -205,8 +237,8 @@ border=0>
         <TBODY>
         <TR>
           <TD align=left height=25><IMG height=11 src="images/icon1.gif" 
-            width=31>　<A 
-            href="#">Media snak </A>＞others</TD>
+            width=31>闁靛棌鍋?A 
+            href="#">Media snak </A>闁挎稓鈧Οhers</TD>
         </TR></TBODY></TABLE><BR>
       <TABLE style="TEXT-ALIGN: center" cellSpacing=0 cellPadding=0 width=590 
       border=0>
@@ -217,7 +249,7 @@ border=0>
             background=images/bg.jpg border=0>
               <TBODY>
               <TR>
-                <TD vAlign=bottom height=30>　　&nbsp;&nbsp;<A 
+                <TD vAlign=bottom height=30>闁靛棌鍋撻柕鍡忓亾&nbsp;&nbsp;<A 
                   href="#" 
                   target=_blank>1</A> </TD>
               </TR>
@@ -231,7 +263,7 @@ border=0>
             background=images/bg.jpg border=0>
               <TBODY>
               <TR>
-                <TD vAlign=bottom height=30>　　2</TD>
+                <TD vAlign=bottom height=30>闁靛棌鍋撻柕鍡忓亾2</TD>
               </TR>
               <TR align=middle>
                 <TD height=120><A href="#" 
@@ -243,7 +275,7 @@ border=0>
             background=images/bg.jpg border=0>
               <TBODY>
               <TR>
-                <TD vAlign=bottom height=30>　　&nbsp;3<A 
+                <TD vAlign=bottom height=30>闁靛棌鍋撻柕鍡忓亾&nbsp;3<A 
                   href="#" 
                   target=_blank></A> </TD>
               </TR>
@@ -258,7 +290,7 @@ border=0>
             background=images/bg.jpg border=0>
               <TBODY>
               <TR>
-                <TD vAlign=bottom height=30>　　&nbsp;&nbsp;<A 
+                <TD vAlign=bottom height=30>闁靛棌鍋撻柕鍡忓亾&nbsp;&nbsp;<A 
                   href="#" 
                   target=_blank>4</A> </TD>
               </TR>
@@ -272,7 +304,7 @@ border=0>
             background=images/bg.jpg border=0>
               <TBODY>
               <TR>
-                <TD vAlign=bottom height=30>　　&nbsp;&nbsp;<A 
+                <TD vAlign=bottom height=30>闁靛棌鍋撻柕鍡忓亾&nbsp;&nbsp;<A 
                   href="#" 
                   target=_blank>5</A> </TD>
               </TR>
@@ -287,7 +319,7 @@ border=0>
             background=images/bg.jpg border=0>
               <TBODY>
               <TR>
-                <TD vAlign=bottom height=30>　　&nbsp;6<A 
+                <TD vAlign=bottom height=30>闁靛棌鍋撻柕鍡忓亾&nbsp;6<A 
                   href="#" 
                   target=_blank></A> </TD>
               </TR>
@@ -302,7 +334,7 @@ border=0>
             background=images/bg.jpg border=0>
               <TBODY>
               <TR>
-                <TD vAlign=bottom height=30>　　&nbsp;&nbsp;<A 
+                <TD vAlign=bottom height=30>闁靛棌鍋撻柕鍡忓亾&nbsp;&nbsp;<A 
                   href="#" 
                   target=_blank>7</A> </TD>
               </TR>
@@ -316,7 +348,7 @@ border=0>
             background=images/bg.jpg border=0>
               <TBODY>
               <TR>
-                <TD vAlign=bottom height=30>　　&nbsp;8<A 
+                <TD vAlign=bottom height=30>闁靛棌鍋撻柕鍡忓亾&nbsp;8<A 
                   href="#" 
                   target=_blank></A> </TD>
               </TR>
@@ -330,7 +362,7 @@ border=0>
             background=images/bg.jpg border=0>
               <TBODY>
               <TR>
-                <TD vAlign=bottom height=30>　　9<A 
+                <TD vAlign=bottom height=30>闁靛棌鍋撻柕鍡忓亾9<A 
                   href="#" 
                   target=_blank></A> </TD>
               </TR>
@@ -345,7 +377,7 @@ border=0>
             background=images/bg.jpg border=0>
               <TBODY>
               <TR>
-                <TD vAlign=bottom height=30>　　&nbsp;&nbsp;<A 
+                <TD vAlign=bottom height=30>闁靛棌鍋撻柕鍡忓亾&nbsp;&nbsp;<A 
                   href="#" 
                   target=_blank>10</A> 
 </TD>
@@ -361,7 +393,7 @@ border=0>
             background=images/bg.jpg border=0>
               <TBODY>
               <TR>
-                <TD vAlign=bottom height=30>　　&nbsp;11<A 
+                <TD vAlign=bottom height=30>闁靛棌鍋撻柕鍡忓亾&nbsp;11<A 
                   href="#" 
                   target=_blank></A> </TD>
               </TR>
@@ -375,7 +407,7 @@ border=0>
             background=images/bg.jpg border=0>
               <TBODY>
               <TR>
-                <TD vAlign=bottom height=30>　　&nbsp;&nbsp;<A 
+                <TD vAlign=bottom height=30>闁靛棌鍋撻柕鍡忓亾&nbsp;&nbsp;<A 
                   href="#" 
                   target=_blank>h#</A> </TD></TR>
               <TR align=middle>
@@ -389,7 +421,7 @@ border=0>
             background=images/bg.jpg border=0>
               <TBODY>
               <TR>
-                <TD vAlign=bottom height=30>　　&nbsp;&nbsp;<A 
+                <TD vAlign=bottom height=30>闁靛棌鍋撻柕鍡忓亾&nbsp;&nbsp;<A 
                   href="#" target=_blank>Inklude</A> 
 </TD></TR>
               <TR align=middle>
@@ -402,7 +434,7 @@ border=0>
             background=images/bg.jpg border=0>
               <TBODY>
               <TR>
-                <TD vAlign=bottom height=30>　　&nbsp;&nbsp;<A 
+                <TD vAlign=bottom height=30>闁靛棌鍋撻柕鍡忓亾&nbsp;&nbsp;<A 
                   href="#" target=_blank>purevolume</A> 
                 </TD></TR>
               <TR align=middle>
@@ -415,7 +447,7 @@ border=0>
             background=images/bg.jpg border=0>
               <TBODY>
               <TR>
-                <TD vAlign=bottom height=30>　　&nbsp;&nbsp;<A 
+                <TD vAlign=bottom height=30>闁靛棌鍋撻柕鍡忓亾&nbsp;&nbsp;<A 
                   href="#" target=_blank>kj52</A> </TD></TR>
               <TR align=middle>
                 <TD height=120><A href="#" 
