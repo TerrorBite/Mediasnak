@@ -26,8 +26,9 @@ urlpatterns = patterns('',
      {'path': 'static/style.css', 'document_root' : homedir}),
 
     # Development
-    (r'^test$', include('gaeunit.urls')),
-    ('^test-databases$', 'msnak.dev_views.test_databases', {}),
+    (r'^test', include('gaeunit.urls')),
+    #('^test-databases$', 'msnak.dev_views.test_databases', {}),
     ('^view-mediafile-table$', 'msnak.dev_views.view_mediafile_model', {}),
-    ('^filenametest$', 'msnak.dev_views.show_filename', {}),
+    ('^loaddatabase$', 'msnak.dev_views.load_test_database_data', {}),
+    #('^filenametest$', 'msnak.dev_views.show_filename', {}),
 )

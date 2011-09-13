@@ -47,9 +47,18 @@ def view_mediafile_model(request):
         view_count--- '''+str(r.view_count)+'''
         </pre></div>
         '''
-    content += '</body>';
+    content += '</body>'
     
     return HttpResponse(content)
+    
+def load_test_database_data(request):
+
+    # The following lets us call django-admin.py (manage.py) commands from python
+    from django.core.management import call_command
+    # Equivalent to running 'manage.py loaddata'
+    call_command('loaddata', 'msnak_testfixture.json')
+
+    return HttpResponse("Data (may have been) Loaded<br><a href='view-mediafile-table'>/view-mediafile-table</a>")
 
 def show_filename(request):
 
