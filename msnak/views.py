@@ -197,6 +197,8 @@ def list_files_page(request):
     file_list_entries = []
     filenames = []
     for file in file_entries:
+        # possible search implementation can be added here:
+        # if file_matches_search(file, search) or 'search' not in request.GET:
         file_list_entries.append(
             {
             'file_id' : file.file_id, # can be used in a URL to access the information page for this file
@@ -217,7 +219,68 @@ def list_files_page(request):
     
     # Use render_to_response shortcut to fill out the HTML template
     template_vars = {
-        'info': 'testinfo',
         'file_list_entries': file_list_entries
     }
     return render_to_response('filelist.html', template_vars)
+
+
+def file_details_page(request):
+    "Displays the page with the detailed metadata about a file"
+
+    #test: http://localhost:8081/file-details?fileid=file1
+
+    user_id = 0
+    bucketname = "s3.mediasnak.com"
+
+    if 'fileid' not in request.GET:
+        return render_to_response('base.html', {'error': 'Please specify a fileid!'}) # this could instead give the user a choice of files
+
+    file_id = request.GET['fileid']
+
+    try:
+        file_entry = MediaFile.objects.get(file_id=file_id)
+    except MediaFile.DoesNotExist:
+        # Essentially a 404, what else could we do with the return?
+        return render_to_response('base.html', { 'error': 'There seems to have been no file by this fileid!' })
+    except MediaFile.MultipleObjectsReturned:
+        return render_to_response('base.html', { 'error': 'There seems to be multiple files by this fileid!' })
+
+    # Use render_to_response shortcut to fill out the HTML template
+    template_vars = {
+        'file_id' : file_entry.file_id, # can be used in a URL to access the information page for this file
+        'download_url' : s3util.sign_url(bucketname, file_entry.file_id),
+        'file_name' : file_entry.filename,
+        'upload_time' : file_entry.upload_time,
+        'view_count' : file_entry.view_count
+    }
+    return render_to_response('filedetails.html', template_vars)
+
+    
+def delete_file(request):
+    "Posting a fileid to this view permanently deletes the file from the system, including file stored on S3, and all metadata"
+
+    user_id = 0
+    bucketname = "s3.mediasnak.com"
+
+    if 'fileid' not in request.GET:
+        return render_to_response('base.html', {'error': 'Please specify a fileid!'}) # this could instead give the user a choice of files
+
+    file_id = request.GET['fileid']
+
+    try:
+        file_entry = MediaFile.objects.get(file_id=file_id)
+    except MediaFile.DoesNotExist:
+        # Essentially a 404, what else could we do with the return?
+        return render_to_response('base.html', { 'error': 'There seems to have been no file by this fileid!' })
+    except MediaFile.MultipleObjectsReturned:
+        return render_to_response('base.html', { 'error': 'There seems to be multiple files by this fileid!' })
+
+    # Use render_to_response shortcut to fill out the HTML template
+    template_vars = {
+        'file_id' : file_entry.file_id, # can be used in a URL to access the information page for this file
+        'download_url' : s3util.sign_url(bucketname, file_entry.file_id),
+        'file_name' : file_entry.filename,
+        'upload_time' : file_entry.upload_time,
+        'view_count' : file_entry.view_count
+    }
+    return render_to_response('filedetails.html', template_vars)

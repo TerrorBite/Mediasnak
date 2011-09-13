@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     ('^download$', 'msnak.views.download_page', {}),
     
     ('^files$', 'msnak.views.list_files_page', {}),
+    ('^file-details$', 'msnak.views.file_details_page', {}),
     
 
     # Static files

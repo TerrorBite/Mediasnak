@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}'{{ file_name }}' Details{% endblock %}
+
+{% block extra-head %}
+<meta http-equiv=Content-Type content="text/html; charset=gb2312">
+<link href="images/main.css" type=text/css rel=stylesheet>
+{% endblock %}
+
+{% block content %}
+<div class="filedetails">
+    <div>
+        Filename:
+        <span class="filename">
+            {{ file_name }}
+        </span>
+    </div>
+    Uploaded:
+    <span class="fileuploadtime">
+        {{ upload_time }}
+    </span>
+    Total Views:
+    <span class="fileviewcount">
+        {{ view_count }}
+    </span>
+    <!-- Preview:
+    <span class="filepreview">
+        space for previewing file when implemented
+    </span> -->
+    <span class="fileurl">
+        <a href="{{ f.download_url }}">download '{{ file_name }}'</a>
+    </span>
+    <!-- <span class="filecategories">
+        
+    </span> -->
+</div>
+{% endblock %}
