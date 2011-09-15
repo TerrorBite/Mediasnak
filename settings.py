@@ -48,10 +48,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 TEST_RUNNER = 'djangotoolbox.test.CapturingTestSuiteRunner'
 
 ADMIN_MEDIA_PREFIX = '/media/admin/'
-TEMPLATE_DIRS = (os.path.join(os.path.dirname(__file__), 'templates'),)
-
+TEMPLATE_DIRS = (os.path.join(os.path.dirname(__file__), 'msnak/templates'),) # when msnak is registered as an INSTALLED_APPS above, this is unnecessary
+FIXTURE_DIRS = ('/msnak/fixtures/',) # when msnak is registered as an INSTALLED_APPS above, this is unnecessary
 ROOT_URLCONF = 'urls'
-
-FIXTURE_DIRS = (
-   '/msnak/fixtures/',
-)

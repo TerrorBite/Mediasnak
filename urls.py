@@ -17,14 +17,15 @@ urlpatterns = patterns('',
     ('^files$', 'msnak.views.list_files_page', {}),
     ('^file-details$', 'msnak.views.file_details_page', {}),
     
-
     # Static files
     ('^favicon.ico$', 'django.views.generic.simple.redirect_to',
         {'url': 'http://s3.mediasnak.com/assets/favicon.ico', 'permanent' : True}),
+    ('^icon.png$', 'django.views.generic.simple.redirect_to',
+        {'url': 'http://s3.mediasnak.com/assets/icon.png', 'permanent' : True}),
     ('^robots.txt$', 'django.views.static.serve',
-     {'path': 'static/robots.txt', 'document_root' : homedir}),
+     {'path': 'msnak/static/robots.txt', 'document_root' : homedir}),
     ('^style.css$', 'django.views.static.serve',
-     {'path': 'static/style.css', 'document_root' : homedir}),
+     {'path': 'msnak/static/style.css', 'document_root' : homedir}),
 
     # Development
     (r'^test', include('gaeunit.urls')),
