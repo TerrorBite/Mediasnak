@@ -14,6 +14,8 @@ urlpatterns = patterns('',
     ('^success$', 'msnak.views.upload_success', {}),
     ('^download$', 'msnak.views.download_page', {}),
 
+    ('^fileinfo$', 'django.views.generic.simple.direct_to_template', {'template': 'fileinfo.html'}),
+
     # Static files
     ('^favicon.ico$', 'django.views.generic.simple.redirect_to',
         {'url': 'http://s3.mediasnak.com/assets/favicon.ico', 'permanent' : True}),
