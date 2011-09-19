@@ -16,6 +16,7 @@ from datetime import datetime, timedelta
 from msnak.s3util import hmac_sign
 from models import MediaFile # Database table for files
 from django import http
+import s3util
 
 def upload_form(request):
     "Produces an upload form for submitting files to S3."
@@ -55,6 +56,7 @@ def upload_form(request):
 
 def upload_success(request):
     "Handles the return process from S3 upload produced by upload_form and returns a success page to the user."
+    # This view creates database entries for a file, the input is upload return values from S3
 
     error = '' # this will hold an error message if we need one to put in the template
 
@@ -118,20 +120,7 @@ def upload_success(request):
     # extract filename from s3
     # ..use key, or etag?
     key = request.GET['key']
-    #
-    from boto.s3.connection import S3Connection
-    #
-    # The keys can be set as environment variables instead
-    botoconn = S3Connection(access_keys.key_id, access_keys.secret)
-    bucket = botoconn.create_bucket(bucketname)
-    #
-    file = bucket.get_key(key)
-    if file is None:
-        return render_to_response('base.html', { 'error': 'This file key is invalid!' })
-    #
-    filename = file.get_metadata('filename')
-    if filename is None:
-        return render_to_response('base.html', { 'error': 'There was an error, the remote metadata on this file couldn\'t be found' })
+    filename = s3util.get_metadata_from_s3(bucketname, key, 'filename')
 
     # check that this etag matches this key?    
     
@@ -146,7 +135,6 @@ def upload_success(request):
     # Get the information for this file (which was just saved)
     # file_entry = MediaFile.objects.get(file_id=file_id)
     
-    import s3util
     #url = s3util.sign_url(bucket, key)
     # strange there's no way to get the bucket name from a bucket object
     # also, is it sent back by Amazon?
@@ -194,3 +182,82 @@ def download_page(request):
     
     # Use render_to_response shortcut to fill out the HTML template
     return render_to_response('download.html', { 'url': url })
+
+def list_files_page(request):
+    "Displays the page with a list of all the user's files"
+
+    # This might be useful, to use the same page to list files in a category, or even for searches
+    # category = request.GET['category']
+
+    user_id = 0
+    bucketname = "s3.mediasnak.com"
+
+    file_entries = MediaFile.objects.filter(user_id=user_id) # what exceptions might this raise?
+    
+    # file_list_entries is the file information which will be used by the template
+    file_list_entries = []
+    filenames = []
+    for file in file_entries:
+        # possible search implementation can be added here:
+        # if file_matches_search(file, search) or 'search' not in request.GET:
+        file_list_entries.append(
+            {
+            'file_id' : file.file_id, # can be used in a URL to access the information page for this file
+            'download_url' : s3util.sign_url(bucketname, file.file_id),
+            'name' : file.filename,
+            'upload_time' : file.upload_time,
+            'view_count' : file.view_count
+            }
+        )
+        # alternative dictionary syntax, apparently
+        # dict(
+        # file_id = file.file_id, # can be used in a URL to access the information page for this file
+        # download_url = s3util.sign_url(bucketname, file.file_id),
+        # name = file.filename,
+        # upload_time = file.upload_time,
+        # view_count = file.view_count
+        # )
+    
+    # Use render_to_response shortcut to fill out the HTML template
+    template_vars = {
+        'file_list_entries': file_list_entries
+    }
+    return render_to_response('filelist.html', template_vars)
+
+
+def file_details_page(request):
+    "Displays the page with the detailed metadata about a file"
+
+    #test: http://localhost:8081/file-details?fileid=file1
+
+    user_id = 0
+    bucketname = "s3.mediasnak.com"
+
+    if 'fileid' not in request.GET:
+        return render_to_response('base.html', {'error': 'Please specify a fileid!'}) # this could instead give the user a choice of files
+
+    file_id = request.GET['fileid']
+
+    try:
+        file_entry = MediaFile.objects.get(file_id=file_id)
+    except MediaFile.DoesNotExist:
+        # Essentially a 404, what else could we do with the return?
+        return render_to_response('base.html', { 'error': 'There seems to have been no file by this fileid!' })
+    except MediaFile.MultipleObjectsReturned:
+        return render_to_response('base.html', { 'error': 'There seems to be multiple files by this fileid!' })
+
+    # Use render_to_response shortcut to fill out the HTML template
+    template_vars = {
+        'file_id' : file_entry.file_id, # can be used in a URL to access the information page for this file
+        'download_url' : s3util.sign_url(bucketname, file_entry.file_id),
+        'file_name' : file_entry.filename,
+        'upload_time' : file_entry.upload_time,
+        'view_count' : file_entry.view_count
+    }
+    return render_to_response('filedetails.html', template_vars)
+
+    
+def delete_file(request):
+    "Posting a fileid to this view permanently deletes the file from the system, including file stored on S3, and all metadata"
+    
+    pass

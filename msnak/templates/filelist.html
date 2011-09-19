@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}All Files{% endblock %}
+{% block header-title %}All Files{% endblock %}
+
+{% block extra-head %}
+{% endblock %}
+
+{% block content %}
+
+TODO: INTEGRATE NEW FILE-LIST TEMPLATE WITH THIS FILE
+
+<div class="filelist">
+{% for f in file_list_entries %}
+    <div class="fileentry">
+        <span class="filename">
+            {{ f.name }}
+        </span>
+        <span class="fileuploadtime">
+            {{ f.upload_time }}
+        </span>
+        <span class="fileviewcount">
+            {{ f.view_count }}
+        </span>
+        <span class="fileurl">
+            <a href="{{ f.download_url }}">download {{ f.name }}</a>
+        </span>
+        <span class="fileinfourl">
+            <a href="file-details?fileid={{ f.file_id }}">{{ f.name }} details</a>
+        </span>
+    </div>
+{% empty %}
+    There are no files to display!
+{% endfor %}
+</div>
+{% endblock %}

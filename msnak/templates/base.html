@@ -23,9 +23,20 @@
   <body>
     <div id="header">
       <a id="logo" href="/"><img src="http://s3.mediasnak.com/assets/icon.png" alt="MediaSnak" style="margin-left:2%;margin-top:1%"></a>
+      <h1>{% block header-title %}{% endblock %}</h1>
     </div>
 
     <div class="columns">
+      <div id="sidebar" class="column">
+        {% block sidebar %}
+        {% endblock %}
+        <ul>
+        <li><a href="/">Home</a>
+        <li><a href="upload">Upload</a>
+        <li><a href="files">All Files</a>
+        </ul>
+      </div>
+      
       <div id="content" class="column">
         {% block content-header %}
           {% if error %}<div class="error">{{ error }}</div>{% endif %}
@@ -38,11 +49,6 @@
         {% endblock %}
 
         {% block content %}{% endblock %}
-      </div>
-
-      <div id="sidebar" class="column">
-        {% block sidebar %}
-        {% endblock %}
       </div>
     </div>
 
