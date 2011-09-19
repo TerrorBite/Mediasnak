@@ -29,8 +29,8 @@ urlpatterns = patterns('',
 
     # Development
     (r'^test', include('gaeunit.urls')),
-    #('^test-databases$', 'msnak.dev_views.test_databases', {}),
-    ('^view-mediafile-table$', 'msnak.dev_views.view_mediafile_model', {}),
+    #('^databasetest$', 'msnak.dev_views.test_databases', {}),
+    ('^viewdatabase$', 'msnak.dev_views.view_mediafile_model', {}),
     ('^loaddatabase$', 'msnak.dev_views.load_test_database_data', {}),
     #('^filenametest$', 'msnak.dev_views.show_filename', {}),
 )

@@ -56,6 +56,7 @@ def upload_form(request):
 
 def upload_success(request):
     "Handles the return process from S3 upload produced by upload_form and returns a success page to the user."
+    # This view creates database entries for a file, the input is upload return values from S3
 
     error = '' # this will hold an error message if we need one to put in the template
 
