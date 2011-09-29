@@ -73,9 +73,10 @@ from google.appengine.api import apiproxy_stub_map
 from google.appengine.api import datastore_file_stub
 from google.appengine.ext.webapp.util import run_wsgi_app
 
-_LOCAL_TEST_DIR = 'test'  # location of files
+_LOCAL_TEST_DIR = 'test'  # location of tests
 _WEB_TEST_DIR = '/test'   # how you want to refer to tests on your web server
-_LOCAL_DJANGO_TEST_DIR = '../../gaeunit/test'
+#_LOCAL_DJANGO_TEST_DIR = '../../gaeunit/test'
+_LOCAL_DJANGO_TEST_DIR = '../../msnak/tests' # location of django tests
 
 # or:
 # _WEB_TEST_DIR = '/u/test'
