@@ -259,5 +259,31 @@ def file_details_page(request):
     
 def delete_file(request):
     "Posting a fileid to this view permanently deletes the file from the system, including file stored on S3, and all metadata"
+    user_id = 0
+    bucketname = "s3.mediasnak.com"
     
-    pass
+    if 'fileid' not in request.GET:
+        return render_to_response('base.html', {'error': 'No fileid was specified.'})
+
+    file_id = request.GET['fileid']
+
+    #check that the file actually exists
+    try:
+        file_entry = MediaFile.objects.get(filename=filename)
+    except MediaFile.DoesNotExist:
+        error = "<h3>There was an error:</h3>" + \
+                "<p>There seems to have been no file by this name.</p>"
+        # Essentially a 404, what else could we do with the return?
+        return render_to_response('base.html', { 'error': error })
+    except MediaFile.MultipleObjectsReturned:
+        pass
+
+    #delete the file off S3
+        #how?
+    
+    #delete file off database
+    try:
+        #MediaFile.
+        
+    #done!
+    return render_to_response('',{'':'The file was deleted!'})
