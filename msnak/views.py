@@ -268,22 +268,24 @@ def delete_file(request):
     file_id = request.GET['fileid']
 
     #check that the file actually exists
-    try:
-        file_entry = MediaFile.objects.get(filename=filename)
-    except MediaFile.DoesNotExist:
-        error = "<h3>There was an error:</h3>" + \
-                "<p>There seems to have been no file by this name.</p>"
-        # Essentially a 404, what else could we do with the return?
-        return render_to_response('base.html', { 'error': error })
-    except MediaFile.MultipleObjectsReturned:
-        pass
+##    try:
+##        MediaFile.objects.get(filename=filename)
+##    except MediaFile.DoesNotExist:
+##        error = "<h3>There was an error:</h3>" + \
+##                "<p>There seems to have been no file by this name.</p>"
+##        # Essentially a 404, what else could we do with the return?
+##        return render_to_response('base.html', { 'error': error })
+##    except MediaFile.MultipleObjectsReturned:
+##        pass
 
     #delete the file off S3
         #how?
     
     #delete file off database
     try:
-        #MediaFile.
+        MediaFile.delete()
+    except NotSavedError:
+        return render_to_response('base.html',{'error':'The file does not exist.'})
         
     #done!
     return render_to_response('',{'':'The file was deleted!'})
