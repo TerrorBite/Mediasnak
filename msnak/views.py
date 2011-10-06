@@ -162,9 +162,8 @@ def download_page(request):
     try:
         file_entry = MediaFile.objects.get(filename=filename)
     except MediaFile.DoesNotExist:
-        error = "<p>There seems to have been no file by this name.</p>"
         # Essentially a 404, what else could we do with the return?
-        return render_to_response('base.html', { 'error': error })
+        return render_to_response('base.html', { 'error': "There seems to have been no file by this name." })
     except MediaFile.MultipleObjectsReturned:
         pass
     
@@ -302,7 +301,21 @@ def search_files(request):
     file_entries = MediaFile.objects.filter(user_id=user_id)
     results = []
 
-    if search_by == "filename":
+    #expand this as we add extra fields (eg. author etc)
+    if search_by == "default":
+        for item in file_entries:
+            #neaten this up later
+            if (search_term in item.filename) or (search_term in item.file_id):
+                results.append(
+                    {
+                    'file_id' : item.file_id, # can be used in a URL to access the information page for this file
+                    'download_url' : s3util.sign_url(bucketname, item.file_id),
+                    'name' : item.filename,
+                    'upload_time' : item.upload_time,
+                    'view_count' : item.view_count
+                    }
+                )
+    else if search_by == "filename":
         for item in file_entries:
             if search_term in item.filename:
                 results.append(
@@ -318,7 +331,7 @@ def search_files(request):
         return render_to_response('base.html',{'error':'That is an invalid category to search by'})
 
     if len(results) < 1:
-        return render_to_response('base.html',{'error':'No search results returned'})
+        return render_to_response('base.html',{'info':'No search results returned'})
     else:
         template_vars = {
             'file_list_entries': results

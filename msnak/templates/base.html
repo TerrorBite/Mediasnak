@@ -31,9 +31,17 @@
         {% block sidebar %}
         {% endblock %}
         <ul>
-        <li><a href="/">Home</a>
-        <li><a href="upload">Upload</a>
-        <li><a href="files">All Files</a>
+			<li><a href="/">Home</a>
+			<li><a href="upload">Upload</a>
+			<li><a href="files">All Files</a>
+			<li><form method="GET" action="http://www.mediasnak.com/search_files">
+				<input type="text" name="searchterm" />
+				<select name="searchby">
+					<option value="default">Search everything</option>
+					<option value="filename">Search filename</option>
+				</select>
+				<input type="submit" value="Search" />
+			</form></li>
         </ul>
       </div>
       
