@@ -16,6 +16,7 @@ from datetime import datetime, timedelta
 from msnak.s3util import hmac_sign
 from models import MediaFile # Database table for files
 from django import http
+from boto.s3.connection import S3Connection
 import s3util
 
 def upload_form(request):
@@ -270,15 +271,17 @@ def delete_file(request):
 ##    except MediaFile.MultipleObjectsReturned:
 ##        pass
 
-    #delete the file off S3
-        #how?
-    
     #delete file off database
     try:
         MediaFile.delete()
     except NotSavedError:
         return render_to_response('base.html',{'error':'The file does not exist.'})
-        
+
+    #delete the file off S3
+    botoconn = S3Connection(access_keys.key_id, access_keys.secret)
+    bucket = botoconn.create_bucket(bucketname)
+    bucket.delete_key(key_name)
+    
     #done!
     return render_to_response('base.html',{'info':'The file was deleted!'})
 
