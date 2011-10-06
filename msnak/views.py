@@ -289,3 +289,45 @@ def delete_file(request):
         
     #done!
     return render_to_response('',{'':'The file was deleted!'})
+
+
+#added by kieran, probably not called by anything yet
+def search_files(request):
+    "displays a list of files matching the request"
+
+    if 'searchterm' not in request.GET:
+        return render_to_response('base.html',{'error':'No serch term specified'});
+
+    if 'searchby' not in request.GET:
+        return render_to_response('base.html',{'error':'Nothing specified to search by.'})
+
+    search_by = request.GET['searchby']
+    search_term = request.GET['searchterm']
+
+    user_id = 0
+    bucketname = "s3.mediasnak.com"
+    file_entries = MediaFile.objects.filter(user_id=user_id)
+    results = []
+
+    if search_by == "filename":
+        for item in file_entries:
+            if search_term in item.filename:
+                results.append(
+                    {
+                    'file_id' : item.file_id, # can be used in a URL to access the information page for this file
+                    'download_url' : s3util.sign_url(bucketname, item.file_id),
+                    'name' : item.filename,
+                    'upload_time' : item.upload_time,
+                    'view_count' : item.view_count
+                    }
+                )
+    else:
+        return render_to_response('base.html',{'error':'That is an invalid category to search by'})
+
+    if len(results) < 1:
+        return render_to_response('base.html',{'error','No search results returned'})
+    else:
+        template_vars = {
+            'file_list_entries': results
+        }
+        return render_to_response('filelist.html', template_vars)
