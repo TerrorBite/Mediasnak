@@ -288,7 +288,7 @@ def delete_file(request):
         return render_to_response('base.html',{'error':'The file does not exist.'})
         
     #done!
-    return render_to_response('',{'':'The file was deleted!'})
+    return render_to_response('base.html',{'info':'The file was deleted!'})
 
 
 #added by kieran, probably not called by anything yet
@@ -325,7 +325,7 @@ def search_files(request):
         return render_to_response('base.html',{'error':'That is an invalid category to search by'})
 
     if len(results) < 1:
-        return render_to_response('base.html',{'error','No search results returned'})
+        return render_to_response('base.html',{'error':'No search results returned'})
     else:
         template_vars = {
             'file_list_entries': results
