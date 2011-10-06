@@ -66,8 +66,7 @@ def upload_success(request):
 
     bucketname = request.GET['bucket']
     if bucketname != 's3.mediasnak.com': # 'magic-string', could maybe put in S3utils
-        error = "<h3>There was an error:</h3>" + \
-                "<p>Apparently somehow this file was uploaded to the wrong bucket or the wrong bucket is being returned.</p>"
+        error = "Apparently somehow this file was uploaded to the wrong bucket or the wrong bucket is being returned."
         return render_to_response('base.html', { 'error': error })
     key = request.GET['key'] # this was created when upload page was requested
     etag = request.GET['etag'] # unused
@@ -88,22 +87,18 @@ def upload_success(request):
         file_entry = MediaFile.objects.get(file_id=file_id)
     except MediaFile.DoesNotExist:
         # if the entry hasn't been created yet ...
-        error = "<h3>There was an error:</h3>" + \
-                "<p>There seems to have been no file set-up for this upload.</p>"
         # What to do now?
         # Either user could re-upload the file,
         # or the system could simply create the file_id now instead assuming there's no reason not to
         template_vars = {
-            'error': error
+            'error': "There seems to have been no file set-up for this upload."
         }
         return render_to_response('base.html', template_vars)
     except MediaFile.MultipleObjectsReturned:
         ## this error will be reached if the user goes back and tries to upload again ##
         # means a file may be overridden in s3
-        error = "<h3>There was an error:</h3>" + \
-                "<p>Apparently this file's ID has already finished uploading before.</p>"
         template_vars = {
-            'error': error,
+            'error': "Apparently this file's ID has already finished uploading before.",
             'bucket': bucketname, 'key': key, 'etag': etag,
             'file_id': file_id, 'user_id': user_id
         }
@@ -111,8 +106,7 @@ def upload_success(request):
 
     # could check the file upload belongs to this user
     if file_entry.user_id != user_id:
-        error = "<h3>There was an error:</h3>" + \
-                "<p>Apparently this file upload wasn't requested by the logged-in user.</p>"
+        return render_to_response('base.html',{'error': "Apparently this file upload wasn't requested by the logged-in user."}
 
     # Make sure this file-id hasn't been already used for another file somehow?
     # for instance, if the user reloads the page, the file information will be overridden
@@ -168,8 +162,7 @@ def download_page(request):
     try:
         file_entry = MediaFile.objects.get(filename=filename)
     except MediaFile.DoesNotExist:
-        error = "<h3>There was an error:</h3>" + \
-                "<p>There seems to have been no file by this name.</p>"
+        error = "<p>There seems to have been no file by this name.</p>"
         # Essentially a 404, what else could we do with the return?
         return render_to_response('base.html', { 'error': error })
     except MediaFile.MultipleObjectsReturned:
