@@ -196,7 +196,7 @@ def search_files(request):
                     'view_count' : item.view_count
                     }
                 )
-    else if search_by == "filename":
+    elif search_by == "filename":
         for item in file_entries:
             if search_term in item.filename:
                 results.append(

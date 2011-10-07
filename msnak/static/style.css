@@ -1,6 +1,7 @@
 
 body{font-size:1.2em; font-family:sans-serif; color:#444}
-a:link {font-weight:bold; text-decoration:none; color:green}
+a:link {font-weight:bold; text-decoration:none; color:/*#7cbc74*//*#88ac53*//*#4c7215*//*#687200*//*#4e5220*//*#6a702b*/#475}
+a:visited {color:/*green*/#573}
 h1{display:inline; align:middle; font-family:sans-serif; font-size:2.5em; color:#777}
 
 #logo{margin-right:2%;margin-left:2%;margin-top:1%}

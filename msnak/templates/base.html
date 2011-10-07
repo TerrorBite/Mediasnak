@@ -8,9 +8,9 @@
   <head>
     <title>{% block title %}{% endblock %} - MediaSnak</title>
 
-    <link rel="stylesheet" type="text/css" href="style.css" />
     <link rel="icon" type="image/x-icon" href="http://s3.mediasnak.com/assets/favicon.ico" />
-    <link rel="shortcut" type="image/x-icon" href="http://s3.mediasnak.com/assets/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" href="style.css" />
     {% block css %}
     {% endblock %}
 
@@ -34,7 +34,7 @@
 			<li><a href="/">Home</a>
 			<li><a href="upload">Upload</a>
 			<li><a href="files">All Files</a>
-			<li><form method="GET" action="http://www.mediasnak.com/search_files">
+			<li><form method="GET" action="search_files">
 				<input type="text" name="searchterm" />
 				<select name="searchby">
 					<option value="default">Search everything</option>
