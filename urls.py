@@ -17,8 +17,6 @@ urlpatterns = patterns('',
     ('^files$', 'msnak.views.list_files_page', {}),
     ('^file-details$', 'msnak.views.file_details_page', {}),
     
-    ('^search_files$', 'msnak.views.search_files', {}),
-    
     ('^fileinfo$', 'django.views.generic.simple.direct_to_template', {'template': 'fileinfo.html'}),
 
     # Static files

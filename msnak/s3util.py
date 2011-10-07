@@ -10,6 +10,8 @@ import access_keys
 
 from boto.s3.connection import S3Connection
 
+import exception
+
 URL_DEFAULT=0
 URL_SUBDOM=1
 URL_CUSTOM=2
@@ -80,16 +82,6 @@ def hmac_sign(s):
     # using our secret key as the HMAC key. We then Base64 the binary result so it's safe for text transmission.
     return base64.b64encode(hmac.new(access_keys.secret, s.encode('utf8'), hashlib.sha1).digest())
     
-class KeyInvalidError(Exception):
-    def __init__(self, value):
-        self.value = value
-    def __str__(self):
-        return repr(self.value)
-class MetadataNameInvalidError(Exception):
-    def __init__(self, value):
-        self.value = value
-    def __str__(self):
-        return repr(self.value)
     
 def get_metadata_from_s3(bucketname, keyname, metadataname):
     """
@@ -101,12 +93,10 @@ def get_metadata_from_s3(bucketname, keyname, metadataname):
     
     file = bucket.get_key(keyname)
     if file is None:
-        raise KeyInvalidError("This file key is invalid!");
-        #old return render_to_response('base.html', { 'error': 'This file key is invalid!' })
+        raise MediasnakError("This file key is invalid.");
     
     metadata = file.get_metadata(metadataname)
     if metadata is None:
-        raise MetadataNameInvalidError("No metadata found under this metadata name");
-        #old return render_to_response('base.html', { 'error': 'There was an error, the remote metadata on this file couldn\'t be found' })
+        raise MediasnakError("No metadata found for this metadata name");
         
     return metadata
