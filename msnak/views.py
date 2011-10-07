@@ -25,7 +25,7 @@ def upload_form(request):
     user_id = 0 # dummy value for now until we get multiple user support
 
     # You know how Youtube has those video IDs that look like "r_xHTXf-iIY"?
-    # This line randomly generates one of those (it's just an 8 bit random value).
+    # This line randomly generates one of those (it's just an 8 byte random value).
     uniq = urlsafe_b64encode(''.join([chr(randrange(255)) for x in xrange(8)]))[:11]
 
     # Put together a key
@@ -107,7 +107,7 @@ def upload_success(request):
 
     # could check the file upload belongs to this user
     if file_entry.user_id != user_id:
-        return render_to_response('base.html',{'error': "Apparently this file upload wasn't requested by the logged-in user."}
+        return render_to_response('base.html',{'error': "Apparently this file upload wasn't requested by the logged-in user."} )
 
     # Make sure this file-id hasn't been already used for another file somehow?
     # for instance, if the user reloads the page, the file information will be overridden
@@ -318,7 +318,7 @@ def search_files(request):
                     'view_count' : item.view_count
                     }
                 )
-    else if search_by == "filename":
+    elif search_by == "filename":
         for item in file_entries:
             if search_term in item.filename:
                 results.append(
