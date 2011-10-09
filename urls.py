@@ -13,6 +13,7 @@ urlpatterns = patterns('',
     ('^upload$', 'msnak.views.upload_form', {}),
     ('^success$', 'msnak.views.upload_success', {}),
     ('^download$', 'msnak.views.download_page', {}),
+	('^delete$', 'msnak.views.delete_file', {}),
     
     ('^files$', 'msnak.views.list_files_page', {}),
     ('^file-details$', 'msnak.views.file_details_page', {}),

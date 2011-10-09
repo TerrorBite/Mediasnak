@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from msnak.s3util import hmac_sign
 import access_keys
 from models import MediaFile # Database table for files
-import customexceptions
+import exception
 
 # Note: I know it's a one-line function which is only used once in the code
 # but it's got a bit complex and has a seperate function than the rest of the code,
@@ -13,7 +13,7 @@ import customexceptions
 #
 def generate_unique_id():
     # You know how Youtube has those video IDs that look like "r_xHTXf-iIY"?
-    # This line randomly generates one of those (it's just an 8 bit random value).
+    # This line randomly generates one of those (it's just an 8 byte random value).
     return urlsafe_b64encode(''.join([chr(randrange(255)) for x in xrange(8)]))[:11]
 
 

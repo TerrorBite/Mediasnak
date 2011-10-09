@@ -1,7 +1,7 @@
 
 from models import MediaFile # Database table for files
 from s3util import sign_url
-import customexceptions
+import exception
 
 def get_user_file_list(user_id, bucketname):
 
