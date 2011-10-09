@@ -273,10 +273,11 @@ def delete_file(request):
 
     #delete file off database
     try:
-        MediaFile.delete()
+        MediaFile.objects.get(file_id__exact=file_id).delete()
     except NotSavedError:
         return render_to_response('base.html',{'error':'The file does not exist.'})
 
+    key_name = 'u/'+file_id
     #delete the file off S3
     botoconn = S3Connection(access_keys.key_id, access_keys.secret)
     bucket = botoconn.create_bucket(bucketname)
