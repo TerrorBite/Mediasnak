@@ -15,7 +15,6 @@ from models import MediaFile # Database table for files
 import accounts
 import exception
 import upload
-import s3util
 import listfiles
 
 
