@@ -1,24 +1,23 @@
 {% extends 'base.html' %}
 
-{% block title %}Upload a file{% endblock %}
+{% block title %}Upload{% endblock %}
+{% block header-title %}Upload A File{% endblock %}
 
-{% block extra-head %}<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />{% endblock %}
+{% block sidebar %}To upload a file, click on the "Choose File" button and select a file to upload. Then click the "Upload" button.{% endblock %}
 
 {% block content %}
 <h1>Upload</h1>
-<p>
 <form action="http://s3.mediasnak.com/" method="post" enctype="multipart/form-data">
-<input type="hidden" name="key" value="{{ key }}" />
-<input type="hidden" name="acl" value="private" />
-<input type="hidden" name="Content-Type" value="image/jpg" />
-<input type="hidden" name="Content-Disposition" value="inline; filename=${filename}" />
-<input type="hidden" name="x-amz-meta-filename" value="${filename}" />
-<input type="hidden" name="success_action_redirect" value="http://www.mediasnak.com/success" />
-<input type="hidden" name="AWSAccessKeyId" value="{{ aws_id }}" />
-<input type="hidden" name="policy" value="{{ policy }}" />
-<input type="hidden" name="signature" value="{{ signature }}" />
-Upload a file: <input type="file" name="file" size="40" />
-<input name="submit" value="Upload" type="submit" />
+<input type="hidden" name="key" value="{{ key }}">
+<input type="hidden" name="acl" value="private">
+<input type="hidden" name="Content-Type" value="image/jpg">
+<input type="hidden" name="Content-Disposition" value="inline; filename=${filename}">
+<input type="hidden" name="x-amz-meta-filename" value="${filename}">
+<input type="hidden" name="success_action_redirect" value="http://www.mediasnak.com/success">
+<input type="hidden" name="AWSAccessKeyId" value="{{ aws_id }}">
+<input type="hidden" name="policy" value="{{ policy }}">
+<input type="hidden" name="signature" value="{{ signature }}">
+Upload a file: <input type="file" name="file" size="40">
+<input name="submit" value="Upload" type="submit">
 </form>
-</p>
 {% endblock %}

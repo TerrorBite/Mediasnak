@@ -1,70 +1,63 @@
-<!DOCTYPE html 
-     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-    dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}"
-    xml:lang="{% firstof LANGUAGE_CODE 'en' %}"
-    lang="{% firstof LANGUAGE_CODE 'en' %}">
-  <head>
-    <title>{% block title %}{% endblock %} - MediaSnak</title>
-
-    <link rel="icon" type="image/x-icon" href="http://s3.mediasnak.com/assets/favicon.ico" />
-
-    <link rel="stylesheet" type="text/css" href="style.css" />
-    {% block css %}
-    {% endblock %}
-
-    {% block preload_js %}
-    {% endblock %}
-
-    {% block extra-head %}{% endblock %}
-  </head>
-
-  <body>
-    <div id="header">
-      <a id="logo" href="/"><img src="http://s3.mediasnak.com/assets/icon.png" alt="MediaSnak" style="margin-left:2%;margin-top:1%"></a>
-      <h1>{% block header-title %}{% endblock %}</h1>
-    </div>
-
-    <div class="columns">
-      <div id="sidebar" class="column">
-        {% block sidebar %}
-        {% endblock %}
-        <ul>
-			<li><a href="/">Home</a>
-			<li><a href="upload">Upload</a>
-			<li><a href="files">All Files</a>
-			<li><form method="GET" action="files">
-				<input type="text" name="searchterm" />
-				<select name="searchby">
-					<option value="default">Search everything</option>
-					<option value="filename">Search filename</option>
-				</select>
-				<input type="submit" value="Search" />
-			</form></li>
-        </ul>
-      </div>
-      
-      <div id="content" class="column">
-        {% block content-header %}
-          {% if error %}<div class="error"><h3>Oops! We seem to have encountered an error!</h3><p>{{ error }}</p></div>{% endif %}
-          {% if info %}<div class="info">{{ info }}</div>{% endif %}
-          {% if messages %}
-            {% for message in messages %}
-              <div class="info">{{ message }}</div>
-            {% endfor %}
-          {% endif %}
+<!DOCTYPE html> <!-- this is HTML5 -->
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>MediaSnak - {% block title %}{% endblock %}</title>
+        <link rel="stylesheet" type="text/css" media="screen" href="style.css">
+        {% block css %}
         {% endblock %}
 
-        {% block content %}{% endblock %}
-      </div>
-    </div>
+        {% block preload_js %}
+        {% endblock %}
 
-    <div id="footer">
-      <p>Powered by <a href="http://www.allbuttonspressed.com/projects/django-nonrel">Django-nonrel</a></p>
-    </div>
+        {% block extra-head %}{% endblock %}
+    </head>
 
-    {% block js %}
-    {% endblock %}
-  </body>
+    <body>
+        <div id="wrapper">
+
+            <div id="header">
+                <div id="hfloat">
+                    {% if username %}You are logged in as {{ username }} - <a href="#">Logout</a>
+                    {% else %}You are not logged in - <a href="#">Log In</a>
+                    {% endif %}
+                </div>
+                <img id="logo" src="http://s3.mediasnak.com/assets/icon.png" width="230" height="94" alt="logo"><br><br><h1>{% block header-title %}{% endblock %}</h1>
+            </div>
+            <div id="navbar">
+                <form id="searchform" method="GET" action="files">
+                    <input type="text" name="searchterm" id="searchbox">
+                    <input type="hidden" name=searchby" value="default">
+                    <input type="submit" name="submit" value="Search" id="submit">
+                </form>
+                <a href="/"><div class="navlink">Home</div></a>
+                <a href="/files"><div class="navlink">Browse</div></a>
+                <a href="/upload"><div class="navlink">Upload</div></a>
+                <a href="#"><div class="navlink">Organise</div></a>
+            </div>
+            <div id="sidebar">
+                {% block sidebar %}{% endblock %}
+            </div>
+            <div id="content">
+                {% block content-header %}
+                {% if error %}<div class="error"><h3>Oops! We seem to have encountered an error!</h3><p>{{ error }}</p></div>{% endif %}
+                {% if info %}<div class="info">{{ info }}</div>{% endif %}
+                {% if messages %}
+                {% for message in messages %}
+                <div class="info">{{ message }}</div>
+                {% endfor %}
+                {% endif %}
+                {% endblock %}
+
+                {% block content %}{% endblock %}
+
+            </div> <!-- /content -->
+            <div class="zero">&nbsp;<!-- this div required for positioning --></div>
+
+            <div id="footer"><a href="mailto:oliver@mediasnak.com">Contact Us</a> - <a href="#">Terms Of Use</a> - <a href="#">About</a> - <a href="http://code.google.com/p/mediasnak">Source Code</a><br>Copyright &copy; 2011 TerrorBite Industries.</div>
+
+        </div>
+        {% block js %}
+        {% endblock %}
+    </body>
 </html>
