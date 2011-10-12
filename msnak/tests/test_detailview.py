@@ -56,3 +56,12 @@ class TestViewFile(TestCase):
     #Browser can view all of types
     #All of the files is under their specific media categories
     #Browser can download any files
+    
+    
+    
+    def testEditFieldsShown(self):
+        # Very 'simple' test
+        response = self.client1.get('/file-details', {'edit': 'true'})
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('Editing' in response.content)
+        self.assertTrue('<input type="text"' in response.content)
