@@ -1,40 +1,84 @@
 {% extends 'base.html' %}
 
-{% block title %}'{{ file_name }}' Details{% endblock %}
+{% block title %}{% if editing %}Editing {% endif %}'{{ file_name }}' Details{% endblock %}
 
 {% block extra-head %}
 <meta http-equiv=Content-Type content="text/html; charset=gb2312">
 <link href="images/main.css" type=text/css rel=stylesheet>
+<style type="text/css">
+.filedetails>div{
+margin:0.5em;
+}
+h2{
+font-size:1em;
+display:inline;
+}
+.filepreview{
+border:solid black 1px;
+width: 100px;
+height: 100px;
+}
+</style>
 {% endblock %}
 
+{% block sidebar %}
+{% if not editing %}<a href="{# request.get_full_path #}/file-details?fileid={{ file_id }}&edit=true">Edit Details</a>{% endif %}
+{% if editing %}<a href="/file-details?fileid={{ file_id }}">Don't Edit</a>{% endif %}
+{% endblock %}
+
+
 {% block content %}
-
-TODO: INTEGRATE NEW FILE-DETAILS TEMPLATE WITH THIS FILE
-
-<div class="filedetails">
-    <div>
-        Filename:
-        <span class="filename">
-            {{ file_name }}
-        </span>
+{% if editing %}
+<form method="post">
+{% endif %}
+    <div class="filedetails">
+        <div class="filename">
+            <h2>Filename:</h2>
+            <span class="entry">
+                {% if editing %}<input type="text" name="filename" value="{% endif %}{{ file_name }}{% if editing %}">{% endif %}
+            </span>
+        </div>
+        <div class="filecategory">
+            <h2>Category:</h2>
+            <span class="entry">
+                {% if editing %}<input type="text" name="filecategory" value="{% endif %}{{ category }}{% if editing %}">{% endif %}
+            </span>
+        </div>
+        <div class="filetags">
+            <h2>Tags:</h2>
+            <span class="entry">
+                {% if editing %}<input type="text" name="filetags" value="{% endif %}{{ tags }}{% if editing %}">{% endif %}
+            </span>
+        </div>
+        <div class="filepreview">
+            <image src="{{ download_url }}" width="100px" height="100px">
+        </div>
+        <div class="fileuploadtime">
+            <h2>Uploaded:</h2>
+            <span class="entry">
+                {{ upload_time }}
+            </span>
+        </div>
+        <div class="fileviewcount">
+            <h2>Total Views:</h2>
+            <span class="entry">
+                {% if editing %}<input type="text" name="fileviewcount" value="{% endif %}{{ view_count }}{% if editing %}">{% endif %}
+            </span>
+        </div>
+        <div class="filecomment">
+            <h2>File Comment:</h2>
+            <span class="entry">
+                {% if editing %}<textarea name="filecomment">{% endif %}{{ comment }}{% if editing %}</textarea>{% endif %}
+            </span>
+        </div>
+        <div class="downloadlink">
+            <a href="{{ download_url }}">Download '{{ file_name }}'</a>
+        <div>
+        {% if editing %}
+            <input type="submit" name="submit" value="Submit Edits">
+        {% endif %}
     </div>
-    Uploaded:
-    <span class="fileuploadtime">
-        {{ upload_time }}
-    </span>
-    Total Views:
-    <span class="fileviewcount">
-        {{ view_count }}
-    </span>
-    <!-- Preview:
-    <span class="filepreview">
-        space for previewing file when implemented
-    </span> -->
-    <span class="fileurl">
-        <a href="{{ f.download_url }}">download '{{ file_name }}'</a>
-    </span>
-    <!-- <span class="filecategories">
-        
-    </span> -->
-</div>
+{% if editing %}
+</form>
+{% endif %}
 {% endblock %}

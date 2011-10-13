@@ -1,14 +1,132 @@
+html, body {
+    margin: 0;
+    background-color: #333;
+    height: 100%;
+    font-size: 12pt;
+    font-family: sans-serif;
+    color: #444;
+}
+a:link {
+    font-weight: bold;
+    text-decoration: none;
+    color: /*#7cbc74*//*#88ac53*//*#4c7215*//*#687200*//*#4e5220*//*#6a702b*/#475;
+}
+a:visited {
+    color: /*green*/#573;
+}
+h1{
+    display: inline;
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 2.5em;
+    color: #777;
+}
 
-body{font-size:1.2em; font-family:sans-serif; color:#444}
-a:link {font-weight:bold; text-decoration:none; color:/*#7cbc74*//*#88ac53*//*#4c7215*//*#687200*//*#4e5220*//*#6a702b*/#475}
-a:visited {color:/*green*/#573}
-h1{display:inline; align:middle; font-family:sans-serif; font-size:2.5em; color:#777}
+div#wrapper {
+    position: relative;
+    width: 800px;
+    margin: 0 auto;
+    background-color: white;
+    min-height: 100%;
+    overflow: hidden; /* makes sure sidebar float doesn't overflow */
+}
 
-#logo{margin-right:2%;margin-left:2%;margin-top:1%}
+img#logo {
+    width: 230px;
+    height: 94px;
+    vertical-align: middle;
+    float: left;
+}
 
-.columns{margin:2% 10%}
-#sidebar{float:left; width:19%}
-#content{float:right; width:80%}
-#footer{clear:both}
+img.thumb {
+    width: 180px;
+    height: 180px;
+}
 
-#footer{ font-size:0.8em; text-align: center }
+div#header {
+    min-height: 100px;
+    text-align: center;
+}
+
+div.item {
+    text-align: left;
+    display: inline-block;
+    border: solid thin blue;
+    margin: 5px;
+}
+
+div#sidebar {
+    min-height: 200px;
+    float: left;
+    width: 150px;
+    border-right: solid thin #ccc;
+    margin-bottom: 40px;
+    padding: 0.2em 5px;
+}
+
+div#content {
+    margin-left: 160px; /* avoid sidebar */
+    margin-bottom: 40px;
+    padding: 0.2em 5px;
+}
+
+div#hfloat { /* user logged in section */
+    margin: 0.5em 1em;
+    font-size: 80%;
+    float: right;
+}
+div#navbar {
+    font-size: 0;
+    text-align: left;
+    border-top: solid thin #ccc;
+    border-bottom: solid thin #ccc;
+}
+div#navbar a {
+    font-size: 14pt;
+    border-right: solid thin #ccc;
+    text-align: center;
+    display: inline-block;
+    width: 120px;
+}
+div#navbar a:hover {
+    background-color: #475;
+    color: white;
+}
+#searchform {
+    width: 310px;
+    font-size: 12pt;
+    float: right;
+    display: inline-block;
+    vertical-align: middle;
+}
+#searchbox {
+    padding: 0;
+    margin: 0;
+    width: 220px;
+}
+#submit {
+    padding: 0;
+    margin: 0;
+    width: 80px;
+}
+div.navlink {
+    padding: 2px 0;
+}
+div#footer {
+    text-align: center;
+    overflow: hidden;
+    height: 40px;
+    font-size: 80%;
+    border-top: solid thin #ccc;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+div.zero {
+    /* Used where content is required to force correct positioning */
+    width: 0;
+    height: 0;
+    visibility: hidden;
+    overflow: hidden;
+}

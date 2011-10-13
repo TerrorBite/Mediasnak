@@ -12,3 +12,6 @@ class MediaFile(m.Model):
     filename = m.CharField(max_length=128)
     upload_time = m.DateTimeField('Time uploaded')
     view_count = m.IntegerField()
+    comment = m.CharField(max_length=1000) # fairly large comments allowed
+    category = m.CharField(max_length=12)
+    tags = m.CharField(max_length=1000)

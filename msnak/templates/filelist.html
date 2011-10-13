@@ -6,9 +6,33 @@
 {% block extra-head %}
 {% endblock %}
 
+{% block sidebar %}
+Browse by Type:<br>
+<a href="?type=all">All</a><br>
+<a href="?type=image">Image</a><br>
+<a href="?type=video">Video</a><br>
+<a href="?type=audio">Audio</a><br>
+<a href="?type=other">Other</a><br>
+<hr>
+Browse by Category:<br>
+<a href="?cat=">All</a><br>
+<a href="?cat=1">Category 1</a><br>
+<a href="?cat=2">Category 2</a><br>
+<a href="?cat=3">Category 3</a><br>
+<a href="?cat=4">Category 4</a><br>
+<a href="?cat=5">Category 5</a><br>
+<hr>
+Sort by:<br>
+<a href="?sort=name">Name</a><br>
+<a href="?sort=type">Type</a><br>
+<a href="?sort=date">Date Uploaded</a><br>
+<a href="?sort=cat">Category</a><br>
+<a href="?sort=meta">Metadata</a><br>
+{% endblock %}
+
 {% block content %}
 
-TODO: INTEGRATE NEW FILE-LIST TEMPLATE WITH THIS FILE
+{# TODO: INTEGRATE NEW FILE-LIST TEMPLATE WITH THIS FILE #}
 
 <div class="filelist">
 {% for f in file_list_entries %}
@@ -23,14 +47,14 @@ TODO: INTEGRATE NEW FILE-LIST TEMPLATE WITH THIS FILE
             {{ f.view_count }}
         </span>
         <span class="fileurl">
-            <a href="{{ f.download_url }}">download {{ f.name }}</a>
+            <a href="{{ f.download_url }}">download</a>
         </span>
         <span class="fileinfourl">
-            <a href="file-details?fileid={{ f.file_id }}">{{ f.name }} details</a>
+            <a href="file-details?fileid={{ f.file_id }}">details</a>
         </span>
     </div>
 {% empty %}
-    There are no files to display!
+    There are no files to display.
 {% endfor %}
 </div>
 {% endblock %}

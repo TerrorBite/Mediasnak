@@ -2,6 +2,26 @@
 {% block title %}Welcome{% endblock %}
 {% block header-title %}Welcome to Mediasnak!{% endblock %}
 
+{% block sidebar %}
+Your recent uploads:
+{% if recentfiles %}
+{% for file in recentfiles %}
+<br>{{ file }}
+{% endfor %}
+{% else %}
+<br>Not Yet Implemented
+{% endif %}
+<hr>Developer Links:
+<ul style="font-size: 80%">
+    <li><a href="http://www.djangobook.com/">Django book</a></li>
+    <li><a href="http://djangosnippets.org/">djangosnippets</a></li>
+    <li><a href="http://www.allbuttonspressed.com/projects/django-mediagenerator">django-mediagenerator</a></li>
+    <li><a href="http://www.allbuttonspressed.com/projects/nonrel-search">nonrel-search</a></li>
+    <li><a href="http://djangopackages.com/">Django Packages</a></li>
+    <li><a href="https://bitbucket.org/ubernostrum/django-registration">django-registration</a></li>
+</ul>
+{% endblock %}
+
 {% block content %}
 <!--h1>Welcome to Mediasnak!</h1-->
 
@@ -11,19 +31,5 @@ Mediasnak is a project being carried out by a group of QUT software students.
 
 <p>
 There's nothing here yet! But if you really want to play around, try the <a href="/upload">upload</a> feature, or <a href="/files">see the uploaded files</a>.
-</p>
-
-<p>
-Developer notes:
-</p>
-
-<ul>
-    <li>We should read the <a href="http://www.djangobook.com/">Django book</a> and check out <a href="http://djangosnippets.org/">djangosnippets</a></li>
-    <li><a href="http://www.allbuttonspressed.com/projects/django-mediagenerator">django-mediagenerator</a>: Combines and compresses your JS and CSS files</li>
-    <li><a href="http://www.allbuttonspressed.com/projects/nonrel-search">nonrel-search</a>: A simple full-text search engine for App Engine and other non-relational DBs &lt;== WE SHOULD GET THIS ONE</li>
-</ul>
-
-<p>
-See also <a href="http://djangopackages.com/">Django Packages</a>. Many simple Django apps (e.g., <a href="https://bitbucket.org/ubernostrum/django-registration">django-registration</a>) should work unmodified. If you want to use <a href="http://robhudson.github.com/django-debug-toolbar/">django-debug-toolbar</a> you need to disable the SQLDebugPanel in your settings.
 </p>
 {% endblock %}

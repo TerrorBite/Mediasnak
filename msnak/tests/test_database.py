@@ -39,3 +39,4 @@ class TestDatabase(TestCase):
     def testDatabaseSetupSecondTime(self):
         # Make sure the database entries don't get duplicated for each test
         self.assertEqual(len(MediaFile.objects.all()), 4)
+        
