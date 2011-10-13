@@ -27,7 +27,12 @@
             <div id="navbar">
                 <form id="searchform" method="GET" action="files">
                     <input type="text" name="searchterm" id="searchbox">
-                    <input type="hidden" name=searchby" value="default">
+                    <!--<input type="hidden" name=searchby" value="default">-->
+					<select name="searchby">
+						<option value="default">Search by everything</option>
+						<option value="filename">Search by filename</option>
+						<option value="uploadtime">Search by Upload time</option>
+					</select>
                     <input type="submit" name="submit" value="Search" id="submit">
                 </form>
                 <a href="/"><div class="navlink">Home</div></a>
