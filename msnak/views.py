@@ -128,13 +128,16 @@ def file_details_page(request):
     "Displays the page with the detailed metadata about a file"
 
     #test: http://localhost:8081/file-details?fileid=file1
-
+    
     user_id = accounts.get_logged_in_user()
     bucketname = "s3.mediasnak.com"
 
     if 'fileid' not in request.GET:
         return render_to_response('filelist.html', {'error': 'No fileid was included. Please choose a file.'})
     file_id = request.GET['fileid']
+    
+    editing = 'edit' in request.GET and request.GET['edit'] == "true"
+    # Note: Python's "and" does short-circuit evaluation
     
     try:
         file_entry = MediaFile.objects.get(file_id=file_id)
@@ -144,12 +147,46 @@ def file_details_page(request):
     except MediaFile.MultipleObjectsReturned:
         return render_to_response('base.html', { 'error': 'There seems to be multiple files by this fileid!' })
 
+    # Process edits to details if they have been submitted
+    
+    # These user input fields need checking
+    #### WHAT ARE THE DATABASE INJECTION RISKS OF DJANGO ?? ####
+    
+    # submitting the following complex string as a filename does not work as expected
+    # <QueryDict: {u'fileviewcount': [u'100'], u'submit': [u'Submit Edits'], u'filename': [u'<QueryDict: {u\'fileviewcount\': [u\'100\'],
+    # u\'submit\': [u\'Submit Edits\'], u\'filename\': [u\'<QueryDict: {u\\\'fileviewcount\\\': [u\\\'100\\\'], u\\\'submit\\\':
+    # [u\\\'Submit Edits\\\'], u\\\'filename\\\': [u\\\'<QueryDict: {u\\\\\\\'fileviewcount\\\\\\\': [u\\\\\\\'100\\\\\\\'], u\\\\\\\
+    #'filename\\\\\\\': [u"<QueryDict: {u\\\\\\\'
+    #fileviewcount\\\\\\\': [u\\\\\\\'100\\\\\\\'], u\\\\\\\'filename\\\\\\\': [u\\\\\\\'<QueryDict: {}>\\\\\\\']}>"]}>\\\']}>\']}>']}>
+    
+    # does not check lengths for instance
+    #also, how does django display values (does it encode html special characters?)
+    
+    if 'submit' in request.POST and request.POST['submit'] == 'Submit Edits':
+        if 'filename' in request.POST:
+            file_entry.filename = request.POST['filename']
+        if 'fileviewcount' in request.POST:
+            file_entry.view_count = request.POST['fileviewcount']
+        if 'filecomment' in request.POST:
+            file_entry.comment = request.POST['filecomment']
+        if 'filecategory' in request.POST:
+            file_entry.category = request.POST['filecategory']
+        if 'filetags' in request.POST:
+            file_entry.tags = request.POST['filetags']
+        file_entry.save()
+        editing = False;
+        
+        
     template_vars = {
+        'editing' : editing,
         'file_id' : file_entry.file_id,
         'download_url' : s3util.sign_url(bucketname, file_entry.file_id),
         'file_name' : file_entry.filename,
         'upload_time' : file_entry.upload_time,
-        'view_count' : file_entry.view_count
+        'view_count' : file_entry.view_count,
+        'comment' : file_entry.comment,
+        'category' : file_entry.category,
+        'tags' : file_entry.tags
     }
     return render_to_response('filedetails.html', template_vars)
 
