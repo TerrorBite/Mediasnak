@@ -2,13 +2,14 @@ from django.utils.unittest import TestCase # This is django's copy of the unitte
 from django.test import TestCase # Has stuff like assertContains, would like to use, but is giving errors when included
 from unittest import TestCase
 from msnak.models import MediaFile # Import our database model
-import msnak.listfiles
+from msnak.listfiles import search_files
 
 class TestSearch(TestCase):
     #assertTrue()
     #assertEquals()
 
     def setUp(self):
+        
         MediaFile(file_id="u/tests/file1", user_id=0, filename="test.png", upload_time="2000-08-03 00:00", view_count=100).save()
         MediaFile(file_id="u/tests/file2", user_id=0, filename="duplicatefilename.png", upload_time="2011-08-16 00:00", view_count=7).save()
         MediaFile(file_id="u/tests/file3", user_id=0, filename="duplicatefilename.png", upload_time="2000-04-25 00:00", view_count=20).save()
@@ -19,8 +20,9 @@ class TestSearch(TestCase):
     def testSearchEverything1(self):
         results = search_files("s3.mediasnak.com",0,"default","file")
         count = 0
-        for item in results:
-            count = count + 1
+        #for item in results:
+        #    count = count + 1
+        count = len(results)
         self.assertEquals(count, 4)
         
     def testSearchEverything2(self):
