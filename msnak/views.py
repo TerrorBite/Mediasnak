@@ -7,12 +7,14 @@ Contains the custom Django views for the Mediasnak application.
 """
 
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+# A little trickery follows: render_to_response is imported with an altered name
+# as we now provide a "fake" render_to_response that adds some stuff we need.
+from django.shortcuts import render_to_response as real_render_to_response
 from django import http
 from boto.s3.connection import S3Connection
 from models import MediaFile # Database table for files
 import s3util, accounts, exception, upload, listfiles, user
-
+from google.appengine.api import users
 
 # A note on returning errors and infos:
 # req.META['HTTP_REFERER'] (sic) gets you the last page the user was on
@@ -113,7 +115,7 @@ def list_files_page(request):
             return render_to_response('filelist.html', { 'error': str(err) })
         
         #template_vars= {'info':'test'}
-        return render_to_response('filelist.html', template_vars)
+        return _render_with_login('filelist.html', template_vars)
 
     template_vars = listfiles.get_user_file_list(user_id, bucketname)
 
@@ -205,9 +207,10 @@ def delete_file(request):
     return render_to_response('base.html', {'info': file_id + ' has been deleted.'})
 
 def template_with_login(request, template):
-	nick = user.get_user_nickname()
-	if nick:
-		return render_to_response(template, {'username': nick})
-	else:
-		return render_to_response(template)
+	"Simple direct-render view that correctly sets vars to display a login or logout link."
+	return real_render_to_response(template, user.template_vars())
+
+def render_to_response(template, vars={}, *args, **kwargs):
+	"A render_to_response replacement that auto-fills required variables."
+	return real_render_to_response(template, user.template_vars(vars), *args, **kwargs)
 	
