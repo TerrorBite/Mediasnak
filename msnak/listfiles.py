@@ -35,7 +35,8 @@ def search_files(bucketname, user_id, search_by, search_term):
     file_entries = MediaFile.objects.filter(user_id=user_id)
     results = []
 
-    #expand this as we add extra fields (eg. author etc)
+    #avaliable fields: file_id, filename, upload_time, view_count, comment, category, tags
+    #default: filename, upload_time, comment, tags
     if search_by == "default":
         for item in file_entries:
             #neaten this up later
@@ -64,6 +65,42 @@ def search_files(bucketname, user_id, search_by, search_term):
     elif search_by == "uploadtime":
         for item in file_entries:
             if search_term in str(item.upload_time):
+                results.append(
+                    {
+                    'file_id' : item.file_id, # can be used in a URL to access the information page for this file
+                    'download_url' : sign_url(bucketname, item.file_id),
+                    'name' : item.filename,
+                    'upload_time' : item.upload_time,
+                    'view_count' : item.view_count
+                    }
+                )
+    elif search_by == "comment":
+        for item in file_entries:
+            if search_term in item.comment:
+                results.append(
+                    {
+                    'file_id' : item.file_id, # can be used in a URL to access the information page for this file
+                    'download_url' : sign_url(bucketname, item.file_id),
+                    'name' : item.filename,
+                    'upload_time' : item.upload_time,
+                    'view_count' : item.view_count
+                    }
+                )
+    elif search_by == "tags":
+        for item in file_entries:
+            if search_term in item.tags:
+                results.append(
+                    {
+                    'file_id' : item.file_id, # can be used in a URL to access the information page for this file
+                    'download_url' : sign_url(bucketname, item.file_id),
+                    'name' : item.filename,
+                    'upload_time' : item.upload_time,
+                    'view_count' : item.view_count
+                    }
+                )
+    elif search_by == "category":
+        for item in file_entries:
+            if search_term == item.category:
                 results.append(
                     {
                     'file_id' : item.file_id, # can be used in a URL to access the information page for this file
