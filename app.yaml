@@ -28,7 +28,7 @@ handlers:
 - url: /_ah/stats/.*
   script: djangoappengine/appstats/ui.py
 
-- url: /((about|static)/.*)?
+- url: /((about|static).*)?
   script: djangoappengine/main/main.py
   
 - url: /.+

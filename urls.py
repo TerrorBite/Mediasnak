@@ -9,6 +9,8 @@ handler500 = 'djangotoolbox.errorviews.server_error'
 urlpatterns = patterns('',
     ('^_ah/warmup$', 'djangoappengine.views.warmup'),
     ('^$', 'msnak.views.template_with_login', {'template': 'home.html'}),
+	('^about$', 'msnak.views.template_with_login', {'template': 'about.html'}),
+	('^about/tos$', 'msnak.views.template_with_login', {'template': 'tos.html'}),
     
     ('^upload$', 'msnak.views.upload_form', {}),
     ('^success$', 'msnak.views.upload_success', {}),

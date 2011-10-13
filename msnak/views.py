@@ -14,7 +14,6 @@ from django import http
 from boto.s3.connection import S3Connection
 from models import MediaFile # Database table for files
 import s3util, accounts, exception, upload, listfiles, user
-from google.appengine.api import users
 
 # A note on returning errors and infos:
 # req.META['HTTP_REFERER'] (sic) gets you the last page the user was on
@@ -115,7 +114,7 @@ def list_files_page(request):
             return render_to_response('filelist.html', { 'error': str(err) })
         
         #template_vars= {'info':'test'}
-        return _render_with_login('filelist.html', template_vars)
+        return render_to_response('filelist.html', template_vars)
 
     template_vars = listfiles.get_user_file_list(user_id, bucketname)
 
