@@ -10,12 +10,8 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django import http
 from boto.s3.connection import S3Connection
-import s3util
 from models import MediaFile # Database table for files
-import accounts
-import exception
-import upload
-import listfiles
+import s3util, accounts, exception, upload, listfiles, user
 
 
 # A note on returning errors and infos:
@@ -207,3 +203,11 @@ def delete_file(request):
     
     # should be '[filename] has been deleted'
     return render_to_response('base.html', {'info': file_id + ' has been deleted.'})
+
+def template_with_login(request, template):
+	nick = user.get_user_nickname()
+	if nick:
+		return render_to_response(template, {'username': nick})
+	else:
+		return render_to_response(template)
+	

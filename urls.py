@@ -27,7 +27,7 @@ urlpatterns = patterns('',
         {'url': 'http://s3.mediasnak.com/assets/icon.png', 'permanent' : True}),
     ('^robots.txt$', 'django.views.static.serve',
      {'path': 'msnak/static/robots.txt', 'document_root' : homedir}),
-    ('^style.css$', 'django.views.static.serve',
+    ('^static/style.css$', 'django.views.static.serve',
      {'path': 'msnak/static/style.css', 'document_root' : homedir}),
 
     # Development

@@ -1,5 +1,5 @@
 application: media-snak
-version: 1
+version: 1-test1
 runtime: python
 api_version: 1
 
@@ -9,6 +9,17 @@ builtins:
 inbound_services:
 - warmup
 
+skip_files:
+- ^(.*/)?app\.ya?ml
+- ^(.*/)?index\.ya?ml
+- ^(.*/)?#.*#
+- ^(.*/)?.*~
+- ^(.*/)?.*\.py[co]
+- ^(.*/)?.*/RCS/.*
+- ^(.*/)?\..*
+- ^(.*/)?.*\.bak$
+- ^(.*/)?development-files/.*
+
 handlers:
 - url: /_ah/queue/deferred
   script: djangoappengine/deferred/handler.py
@@ -17,10 +28,9 @@ handlers:
 - url: /_ah/stats/.*
   script: djangoappengine/appstats/ui.py
 
-- url: /media/admin
-  static_dir: django/contrib/admin/media
-  expiration: '0'
-
-- url: /.*
+- url: /((about|static)/.*)?
+  script: djangoappengine/main/main.py
+  
+- url: /.+
   script: djangoappengine/main/main.py
   login: required

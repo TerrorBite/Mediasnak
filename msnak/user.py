@@ -1,11 +1,12 @@
 from google.appengine.api import users
 
-def checkLogin():
-    user = users.ger_current_user()
+def get_user_nickname():
+    user = users.get_current_user()
     if user:
-        message = "Welcome " + user.nickname() + " (<a href=\"" +\
-                  users.create_logout_url() + "\">Log Out</a>"
+        return user.nickname()
     else:
-        message = "<a href=\"" + users.create_login_url + "\">Sign in!</a>"
+        return None
 
-    return message
+def is_logged_in():
+	if users.get_current_user(): return True
+	return False
