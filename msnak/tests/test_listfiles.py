@@ -34,6 +34,6 @@ class TestListFiles(TestCase):
         self.assertEqual(response.status_code, 200)
         
         
-    def testListFilesView(self):
+    #def testListFilesView(self):
         
-        self.assertTrue( , )
+        #self.assertTrue( , )
