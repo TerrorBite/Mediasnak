@@ -16,30 +16,30 @@ class TestSearch(TestCase):
         MediaFile(file_id="u/tests/pQv-O2sFKi8", user_id=0, filename="Jellyfish.jpg", upload_time="2011-01-01 00:00", view_count=350).save()
 
     #couple of searches searching the database for everything
-    def searchEverything1(self):
-        results = search_files("s3.mediasnak.com",0,"default","file")
+    def testSearchEverything1(self):
+        results = msnak.listfiles.search_files("s3.mediasnak.com",0,"default","file")
         count = 0
         for item in results:
             count = count + 1
         self.assertEquals(count, 4)
         
-    def searchEverything2(self):
-        results = search_files("s3.mediasnak.com",0,"default","1") ##NOTE: NOT SEARCHING UPLOAD TIME OR VIEW COUNT YET
+    def testSearchEverything2(self):
+        results = msnak.listfiles.search_files("s3.mediasnak.com",0,"default","1") ##NOTE: NOT SEARCHING UPLOAD TIME OR VIEW COUNT YET
         count = 0
         for item in results:
             count = count + 1
         self.assertEquals(count,2)
 
     #couple of searches searching the database for filenames
-    def searchFileName1(self):
-        results = search_files("s3.mediasnak.com",0,"default",".jpg")
+    def testSearchFileName1(self):
+        results = msnak.listfiles.search_files("s3.mediasnak.com",0,"default",".jpg")
         count = 0
         for item in results:
             count = count + 1
         self.assertEquals(count,2)
 
-    def searchFileName2(self):
-        results = search_files("s3.mediasnak.com",0,"default","file")
+    def testSearchFileName2(self):
+        results = msnak.listfiles.search_files("s3.mediasnak.com",0,"default","file")
         count = 0
         for item in results:
             count = count + 1
