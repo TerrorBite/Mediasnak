@@ -1,11 +1,10 @@
 
 from models import MediaFile # Database table for files
-from s3util import sign_url
 import exception
 
 def get_user_file_list(user_id, bucketname):
 
-    file_entries = MediaFile.objects.filter(user_id=user_id) # what exceptions might this raise?
+    file_entries = MediaFile.objects.filter(user_id=user_id, upload_time__isnull=False) # retrieve the user's items
     
     # file_list_entries is the file information which will be used by the template
     file_list_entries = []
@@ -16,7 +15,7 @@ def get_user_file_list(user_id, bucketname):
         file_list_entries.append(
             {
             'file_id' : file.file_id, # can be used in a URL to access the information page for this file
-            'download_url' : sign_url(bucketname, file.file_id),
+            'download_url' : '/download?fileid='+file.file_id,
             'name' : file.filename,
             'upload_time' : file.upload_time,
             'view_count' : file.view_count
@@ -44,7 +43,7 @@ def search_files(bucketname, user_id, search_by, search_term):
                 results.append(
                     {
                     'file_id' : item.file_id, # can be used in a URL to access the information page for this file
-                    'download_url' : sign_url(bucketname, item.file_id),
+                    'download_url' : '/download?fileid='+item.file_id,
                     'name' : item.filename,
                     'upload_time' : item.upload_time,
                     'view_count' : item.view_count
@@ -56,7 +55,7 @@ def search_files(bucketname, user_id, search_by, search_term):
                 results.append(
                     {
                     'file_id' : item.file_id, # can be used in a URL to access the information page for this file
-                    'download_url' : sign_url(bucketname, item.file_id),
+                    'download_url' : '/download?fileid='+item.file_id,
                     'name' : item.filename,
                     'upload_time' : item.upload_time,
                     'view_count' : item.view_count
@@ -68,7 +67,7 @@ def search_files(bucketname, user_id, search_by, search_term):
                 results.append(
                     {
                     'file_id' : item.file_id, # can be used in a URL to access the information page for this file
-                    'download_url' : sign_url(bucketname, item.file_id),
+                    'download_url' : '/download?fileid='+item.file_id,
                     'name' : item.filename,
                     'upload_time' : item.upload_time,
                     'view_count' : item.view_count
@@ -80,7 +79,7 @@ def search_files(bucketname, user_id, search_by, search_term):
                 results.append(
                     {
                     'file_id' : item.file_id, # can be used in a URL to access the information page for this file
-                    'download_url' : sign_url(bucketname, item.file_id),
+                    'download_url' : '/download?fileid='+item.file_id,
                     'name' : item.filename,
                     'upload_time' : item.upload_time,
                     'view_count' : item.view_count
@@ -92,7 +91,7 @@ def search_files(bucketname, user_id, search_by, search_term):
                 results.append(
                     {
                     'file_id' : item.file_id, # can be used in a URL to access the information page for this file
-                    'download_url' : sign_url(bucketname, item.file_id),
+                    'download_url' : '/download?fileid='+item.file_id,
                     'name' : item.filename,
                     'upload_time' : item.upload_time,
                     'view_count' : item.view_count
@@ -104,14 +103,14 @@ def search_files(bucketname, user_id, search_by, search_term):
                 results.append(
                     {
                     'file_id' : item.file_id, # can be used in a URL to access the information page for this file
-                    'download_url' : sign_url(bucketname, item.file_id),
+                    'download_url' : '/download?fileid='+item.file_id,
                     'name' : item.filename,
                     'upload_time' : item.upload_time,
                     'view_count' : item.view_count
                     }
                 )
     else:
-        raise MediasnakError("That is an invalid category to search by.");
+        raise exception.MediasnakError("That is an invalid category to search by.");
         #return render_to_response('base.html',{'error':'That is an invalid category to search by'})
 
     

@@ -83,9 +83,9 @@ def hmac_sign(s):
     return base64.b64encode(hmac.new(access_keys.secret, s.encode('utf8'), hashlib.sha1).digest())
     
     
-def get_metadata_from_s3(bucketname, keyname, metadataname):
+def get_s3_metadata(bucketname, keyname):
     """
-    Request a metadata associated with a file on S3
+    Request a dictionary of all metadata associated with a file on S3
     """
     # Alternatively, the keys can be set as environment variables
     botoconn = S3Connection(access_keys.key_id, access_keys.secret)
@@ -93,10 +93,18 @@ def get_metadata_from_s3(bucketname, keyname, metadataname):
     
     file = bucket.get_key(keyname)
     if file is None:
-        raise MediasnakError("This file key is invalid.");
-    
-    metadata = file.get_metadata(metadataname)
-    if metadata is None:
-        raise MediasnakError("No metadata found for this metadata name");
-        
-    return metadata
+        raise exception.MediasnakError("This file key is invalid.")
+    return file.metadata
+
+def get_s3_metadata_item(bucketname, keyname, metadata):
+    datadict = get_s3_metadata(bucketname, keyname)
+    if metadata not in datadict:
+        raise exception.MediasnakError("The metadata does not exist on this key.")
+
+def update_s3_metadata(bucketname, keyname, metadata):
+    if type(metadata) is not dict:
+        raise TypeError('Metadata must be a dictionary')
+    k.metadata.update(metadata)
+    k2 = k.copy(k.bucket.name, k.name, k.metadata, preserve_acl=True)
+    k2.metadata = k.metadata    # boto gives back an object without *any* metadata
+    k = k2;

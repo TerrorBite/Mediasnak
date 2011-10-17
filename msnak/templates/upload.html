@@ -10,10 +10,11 @@
 <form action="http://s3.mediasnak.com/" method="post" enctype="multipart/form-data">
 <input type="hidden" name="key" value="{{ key }}">
 <input type="hidden" name="acl" value="private">
-<input type="hidden" name="Content-Type" value="image/jpg">
+<input type="hidden" name="Content-Type" value="application/octet-stream">
 <input type="hidden" name="Content-Disposition" value="inline; filename=${filename}">
 <input type="hidden" name="x-amz-meta-filename" value="${filename}">
-<input type="hidden" name="success_action_redirect" value="http://www.mediasnak.com/success">
+<input type="hidden" name="x-amz-meta-userid" value="{{ user_id }}">
+<input type="hidden" name="success_action_redirect" value="http://{{ return_host }}/success">
 <input type="hidden" name="AWSAccessKeyId" value="{{ aws_id }}">
 <input type="hidden" name="policy" value="{{ policy }}">
 <input type="hidden" name="signature" value="{{ signature }}">
