@@ -21,6 +21,7 @@ skip_files:
 - ^(.*/)?development-files/.*
 
 handlers:
+# These two were put here by Django, they're probably important
 - url: /_ah/queue/deferred
   script: djangoappengine/deferred/handler.py
   login: admin
@@ -28,9 +29,17 @@ handlers:
 - url: /_ah/stats/.*
   script: djangoappengine/appstats/ui.py
 
+# Handler for cronjobs (admin login required)
+- url: /cron/.*
+  script: djangoappengine/main/main.py
+  login: admin
+
+# Handler for content not requiring user login
+# (main page, static content, about pages)
 - url: /((about|static).*)?
   script: djangoappengine/main/main.py
   
+# Handler for everything else (login required)
 - url: /.+
   script: djangoappengine/main/main.py
   login: required
