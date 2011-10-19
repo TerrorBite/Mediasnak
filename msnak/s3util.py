@@ -92,10 +92,10 @@ def get_s3_metadata(bucketname, keyname):
     #needs is_secure=False because of SSL validation failing for some reason
     bucket = botoconn.create_bucket(bucketname)
     
-    file = bucket.get_key(keyname)
-    if file is None:
+    k = bucket.get_key(keyname)
+    if k is None:
         raise exception.MediasnakError("This file key is invalid.")
-    return file.metadata
+    return k.metadata
 
 def get_s3_metadata_item(bucketname, keyname, metadata):
     datadict = get_s3_metadata(bucketname, keyname)
@@ -105,6 +105,13 @@ def get_s3_metadata_item(bucketname, keyname, metadata):
 def update_s3_metadata(bucketname, keyname, metadata):
     if type(metadata) is not dict:
         raise TypeError('Metadata must be a dictionary')
+    botoconn = S3Connection(access_keys.key_id, access_keys.secret, is_secure=False)
+    #needs is_secure=False because of SSL validation failing for some reason
+    bucket = botoconn.create_bucket(bucketname)
+    
+    k = bucket.get_key(keyname)
+    if k is None:
+        raise exception.MediasnakError("This file key is invalid.")
     k.metadata.update(metadata)
     k2 = k.copy(k.bucket.name, k.name, k.metadata, preserve_acl=True)
     k2.metadata = k.metadata    # boto gives back an object without *any* metadata
