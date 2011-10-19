@@ -108,7 +108,7 @@ def process_return_from_upload(bucketname, user_id, key, etag):
     # Set the file status as uploaded in database
     file_entry.filename=filename
     file_entry.upload_time=upload_time
-    file_entry,uploaded=True
+    file_entry.uploaded=True
     file_entry.save()
     # Now everything for the file entry except view_count should now be filled in
     
