@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from msnak.s3util import hmac_sign
 import access_keys, os, mimetypes
 from models import MediaFile # Database table for files
-from exception import MediasnakError
+import exception
 
 # Note: I know it's a one-line function which is only used once in the code
 # but it's got a bit complex and has a seperate function than the rest of the code,
