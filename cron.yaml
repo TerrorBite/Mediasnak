@@ -2,3 +2,6 @@ cron:
 - description: keep alive
   url: /
   schedule: every 2 minutes
+- description: purge unused uploads from database
+  url: /cron/purgedb
+  schedule: every 15 minutes

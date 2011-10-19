@@ -213,7 +213,7 @@ def delete_file(request):
 
 def purge_uploads(request):
     upload.purge_uploads()
-    return HttpRequest(status=204) # 204 OK No Response
+    return HttpResponse(status=204) # 204 OK No Response
 
 # Hash the User ID and use it as the ETag. This should solve caching issues.
 @etag(login_template_etag)
