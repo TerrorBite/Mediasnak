@@ -206,6 +206,7 @@ def delete_file(request):
     # should be '[filename] has been deleted'
     return render_to_response('base.html', {'info': file_id + ' has been deleted.'})
 
+@cache_control(private=True)
 def template_with_login(request, template):
     "Simple direct-render view that correctly sets vars to display a login or logout link."
     return real_render_to_response(template, user.template_vars())
