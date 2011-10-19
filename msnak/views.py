@@ -12,10 +12,12 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render_to_response as real_render_to_response
 from django import http
 from django.views.decorators.cache import cache_control
+from django.views.decorators.http import etag
 from boto.s3.connection import S3Connection
 from models import MediaFile # Database table for files
 from exception import MediasnakError
 import s3util, upload, listfiles, user
+from os import environ
 
 # A note on returning errors and infos:
 # req.META['HTTP_REFERER'] (sic) gets you the last page the user was on
@@ -206,7 +208,8 @@ def delete_file(request):
     # should be '[filename] has been deleted'
     return render_to_response('base.html', {'info': file_id + ' has been deleted.'})
 
-@cache_control(private=True)
+# Hash the User ID and use it as the ETag. This should solve caching issues.
+@etag(login_template_etag)
 def template_with_login(request, template):
     "Simple direct-render view that correctly sets vars to display a login or logout link."
     return real_render_to_response(template, user.template_vars())
@@ -215,3 +218,5 @@ def render_to_response(template, vars={}, *args, **kwargs):
     "A render_to_response replacement that auto-fills required variables."
     return real_render_to_response(template, user.template_vars(vars), *args, **kwargs)
     
+def login_template_etag(request, template):
+    return hashlib.sha1(str(user.get_user_id()) + environ['CURRENT_VERSION_ID']).hexdigest()
