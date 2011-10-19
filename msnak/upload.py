@@ -53,7 +53,7 @@ def upload_form_parameters(bucketname, user_id):
     # and also ensure it was a valid upload
     # The filename, upload time and view count will be filled in later (just setting upload time to the current time for now)
     # User ID may also be checked later
-    file_entry = MediaFile(file_id=file_id, user_id=user_id, filename='', upload_time=None, view_count=0)
+    file_entry = MediaFile(file_id=file_id, uploaded=False, user_id=user_id, filename='', upload_time=datetime.utcnow(), view_count=0)
     file_entry.save()
     
     return { 'key': s3_key, 'aws_id': access_keys.key_id, 'policy': policy, 'signature': signature, 'return_host': os.environ['HTTP_HOST'], 'user_id': user_id }
@@ -78,7 +78,7 @@ def process_return_from_upload(bucketname, user_id, key, etag):
         ## this error should never occur due to primary key constraint ##
         raise exception.MediasnakError("Apparently this file's ID, '" + file_id + "' has already finished uploading before.")
         
-    if file_entry.upload_time != None:
+    if file_entry.uploaded:
         raise exception.MediasnakError("Sorry, this file has already been uploaded. Try going back and uploading a new file.")
 
     # Check the file upload belongs to this user
@@ -108,6 +108,7 @@ def process_return_from_upload(bucketname, user_id, key, etag):
     # Set the file status as uploaded in database
     file_entry.filename=filename
     file_entry.upload_time=upload_time
+    file_entry,uploaded=True
     file_entry.save()
     # Now everything for the file entry except view_count should now be filled in
     
@@ -120,3 +121,6 @@ def process_return_from_upload(bucketname, user_id, key, etag):
         'filename': filename,
         'mimetype': mimetypes.guess_type(filename)[0]
     }
+
+def purge_uploads():
+    MediaFile.objects.filter(upload_time__lte=(datetime.utcnow()-timedelta(minutes=30))).delete()

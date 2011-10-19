@@ -40,6 +40,7 @@ def view_mediafile_model(request):
     for r in retr:
       content += '''
         <div><pre>
+        uploaded----- '''+str(r.uploaded)+'''
         file_id------ '''+str(r.file_id)+'''
         user_id------ '''+str(r.user_id)+'''
         filename----- '''+str(r.filename)+'''

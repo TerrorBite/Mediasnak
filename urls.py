@@ -9,18 +9,19 @@ handler500 = 'djangotoolbox.errorviews.server_error'
 urlpatterns = patterns('',
     ('^_ah/warmup$', 'djangoappengine.views.warmup'),
     ('^$', 'msnak.views.template_with_login', {'template': 'home.html'}),
-	('^about$', 'msnak.views.template_with_login', {'template': 'about.html'}),
-	('^about/tos$', 'msnak.views.template_with_login', {'template': 'tos.html'}),
+    ('^about$', 'msnak.views.template_with_login', {'template': 'about.html'}),
+    ('^about/tos$', 'msnak.views.template_with_login', {'template': 'tos.html'}),
     
     ('^upload$', 'msnak.views.upload_form', {}),
     ('^success$', 'msnak.views.upload_success', {}),
     ('^download$', 'msnak.views.download_page', {}),
-	('^delete$', 'msnak.views.delete_file', {}),
+    ('^delete$', 'msnak.views.delete_file', {}),
     
     ('^files$', 'msnak.views.list_files_page', {}),
     ('^file-details$', 'msnak.views.file_details_page', {}),
-    
     ('^fileinfo$', 'django.views.generic.simple.direct_to_template', {'template': 'fileinfo.html'}),
+
+    ('^cron/purgedb$', 'msnak.views.purge_uploads', {}),
 
     # Static files
     ('^favicon.ico$', 'django.views.generic.simple.redirect_to',

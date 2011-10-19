@@ -8,9 +8,10 @@ class User(m.Model):
 
 class MediaFile(m.Model):
     file_id = m.CharField(max_length=12, primary_key=True)
+    uploaded = m.BooleanField()
     user_id = m.CharField(max_length=128)
     filename = m.CharField(max_length=128)
-    upload_time = m.DateTimeField('Time uploaded', null=True)
+    upload_time = m.DateTimeField()
     view_count = m.IntegerField()
     comment = m.CharField(max_length=1000) # fairly large comments allowed
     category = m.CharField(max_length=12)

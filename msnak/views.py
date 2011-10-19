@@ -212,6 +212,10 @@ def delete_file(request):
     # should be '[filename] has been deleted'
     return render_to_response('base.html', {'info': file_id + ' has been deleted.'})
 
+def purge_uploads(request):
+    upload.purge_uploads()
+    return HttpRequest(status=204) # 204 OK No Response
+
 # Hash the User ID and use it as the ETag. This should solve caching issues.
 @etag(login_template_etag)
 #@vary_on_headers('Cookie')
