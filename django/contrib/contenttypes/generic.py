@@ -10,7 +10,7 @@ from django.db.models.fields.related import RelatedField, Field, ManyToManyRel
 from django.db.models.loading import get_model
 from django.forms import ModelForm
 from django.forms.models import BaseModelFormSet, modelformset_factory, save_instance
-from django.contrib.admin.options import InlineModelAdmin, flatten_fieldsets
+#from django.contrib.admin.options import InlineModelAdmin, flatten_fieldsets
 from django.utils.encoding import smart_unicode
 from django.utils.functional import curry
 
@@ -393,7 +393,7 @@ def generic_inlineformset_factory(model, form=ModelForm,
     FormSet.ct_field = ct_field
     FormSet.ct_fk_field = fk_field
     return FormSet
-
+"""
 class GenericInlineModelAdmin(InlineModelAdmin):
     ct_field = "content_type"
     ct_fk_field = "object_id"
@@ -430,3 +430,4 @@ class GenericStackedInline(GenericInlineModelAdmin):
 
 class GenericTabularInline(GenericInlineModelAdmin):
     template = 'admin/edit_inline/tabular.html'
+"""
