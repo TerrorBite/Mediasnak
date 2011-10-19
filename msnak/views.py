@@ -13,6 +13,7 @@ from django.shortcuts import redirect, render_to_response as real_render_to_resp
 from django import http
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import etag
+from django.views.decorators.vary import vary_on_headers
 from boto.s3.connection import S3Connection
 from models import MediaFile # Database table for files
 from exception import MediasnakError
@@ -213,6 +214,7 @@ def delete_file(request):
 
 # Hash the User ID and use it as the ETag. This should solve caching issues.
 @etag(login_template_etag)
+@vary_on_headers('Cookie')
 def template_with_login(request, template):
     "Simple direct-render view that correctly sets vars to display a login or logout link."
     return real_render_to_response(template, user.template_vars())
