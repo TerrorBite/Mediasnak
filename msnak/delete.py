@@ -14,7 +14,7 @@ Raises MediaFile.DoesNotExist
         return exception.MediasnakError("The file does not exist.")
 
     #delete the file off S3
-    botoconn = S3Connection(access_keys.key_id, access_keys.secret)
+    botoconn = S3Connection(access_keys.key_id, access_keys.secret, is_secure=False)
     bucket = botoconn.create_bucket(bucketname)
     bucket.delete_key('u/'+file_id)
     

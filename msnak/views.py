@@ -14,7 +14,6 @@ from django import http
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import etag
 from django.views.decorators.vary import vary_on_headers
-from boto.s3.connection import S3Connection
 from models import MediaFile # Database table for files
 from exception import MediasnakError
 import s3util, upload, listfiles, user, hashlib

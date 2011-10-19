@@ -88,7 +88,8 @@ def get_s3_metadata(bucketname, keyname):
     Request a dictionary of all metadata associated with a file on S3
     """
     # Alternatively, the keys can be set as environment variables
-    botoconn = S3Connection(access_keys.key_id, access_keys.secret)
+    botoconn = S3Connection(access_keys.key_id, access_keys.secret, is_secure=False)
+    #needs is_secure=False because of SSL validation failing for some reason
     bucket = botoconn.create_bucket(bucketname)
     
     file = bucket.get_key(keyname)
