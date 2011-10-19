@@ -214,7 +214,7 @@ def delete_file(request):
 
 # Hash the User ID and use it as the ETag. This should solve caching issues.
 @etag(login_template_etag)
-@vary_on_headers('Cookie')
+#@vary_on_headers('Cookie')
 def template_with_login(request, template):
     "Simple direct-render view that correctly sets vars to display a login or logout link."
     return real_render_to_response(template, user.template_vars())
