@@ -92,7 +92,7 @@ def process_return_from_upload(bucketname, user_id, key, etag):
     # ..use key, or etag?
     import s3util
     metadata = s3util.get_s3_metadata(bucketname, key)
-    if 'filename' not in metadata or 'user_id' not in metadata:
+    if 'filename' not in metadata or 'userid' not in metadata:
         raise exception.MediasnakError('There is some metadata missing from the file on S3! This shouldn\'t happen.')
     
     filename = metadata['filename']
