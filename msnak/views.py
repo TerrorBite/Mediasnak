@@ -16,7 +16,7 @@ from django.views.decorators.http import etag
 from boto.s3.connection import S3Connection
 from models import MediaFile # Database table for files
 from exception import MediasnakError
-import s3util, upload, listfiles, user
+import s3util, upload, listfiles, user, hashlib
 from os import environ
 
 # A note on returning errors and infos:
