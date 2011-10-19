@@ -52,6 +52,12 @@ Sort by:<br>
         <span class="fileinfourl">
             <a href="file-details?fileid={{ f.file_id }}">details</a>
         </span>
+        <span class="filedelete">
+            <form action="/delete" method="POST">
+                <input type="hidden" name="fileid" value="{{ f.file_id }}">
+                <input type="submit" name="submit" value="Delete">
+            </form>
+        </span>
     </div>
 {% empty %}
     There are no files to display.

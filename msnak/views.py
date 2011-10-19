@@ -16,7 +16,7 @@ from django.views.decorators.http import etag
 from django.views.decorators.vary import vary_on_headers
 from models import MediaFile # Database table for files
 from exception import MediasnakError
-import s3util, upload, listfiles, user, hashlib
+import s3util, upload, listfiles, user, hashlib, delete
 from os import environ
 
 # A note on returning errors and infos:

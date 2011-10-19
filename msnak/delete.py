@@ -1,14 +1,16 @@
 
-import exception
+import exception, access_keys
+from models import MediaFile
+from boto.s3.connection import S3Connection
 
 def delete_file(bucketname, user_id, file_id):
-"""
-Raises MediaFile.DoesNotExist
-       MediaFile.MultipleObjectsReturned
-"""
-
+    """
+    Raises MediaFile.DoesNotExist
+           MediaFile.MultipleObjectsReturned
+    """
+    
     #check that the file actually exists
-    try
+    try:
         file_entry = MediaFile.objects.get(file_id=file_id)
     except MediaFile.DoesNotExist:
         return exception.MediasnakError("The file does not exist.")
