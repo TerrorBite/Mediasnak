@@ -30,7 +30,6 @@ handlers:
 
 - url: /((about|static).*)?
   script: djangoappengine/main/main.py
-  expiration: "0s"
   
 - url: /.+
   script: djangoappengine/main/main.py
