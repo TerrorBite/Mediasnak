@@ -26,6 +26,9 @@ from os import environ
 # alternatively, just let the user hit the back button
 
 
+# Utility function for etag decorator    
+def login_template_etag(request, *args, **kwargs):
+    return hashlib.sha1(str(user.get_user_id()) + environ['CURRENT_VERSION_ID']).hexdigest()
 
 @cache_control(no_cache=True, max_age=0)
 def upload_form(request):
@@ -217,6 +220,3 @@ def template_with_login(request, template):
 def render_to_response(template, vars={}, *args, **kwargs):
     "A render_to_response replacement that auto-fills required variables."
     return real_render_to_response(template, user.template_vars(vars), *args, **kwargs)
-    
-def login_template_etag(request, template):
-    return hashlib.sha1(str(user.get_user_id()) + environ['CURRENT_VERSION_ID']).hexdigest()
