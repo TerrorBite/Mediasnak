@@ -84,7 +84,15 @@ def download_page(request):
         file_entry = MediaFile.objects.get(file_id=file_id)
     except MediaFile.DoesNotExist:
         # Essentially a 404, what else could we do with the return?
-        return render_to_response('base.html', { 'error': "You have supplied an invalid file ID." })
+        response = render_to_response('base.html', { 'error': "Not Found: The file you are trying to access does not exist." })
+        response.status_code = 404
+        return response
+
+    if file_entry.user_id != user.get_user_id():
+        # Essentially a 403
+        response = render_to_response('base.html', { 'error': "Forbidden: You are trying to access a file that you didn't upload." })
+        response.status_code = 403
+        return response
     
     key = 'u/'+file_id
     
