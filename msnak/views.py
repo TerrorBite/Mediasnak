@@ -217,7 +217,8 @@ def delete_file(request):
         return render_to_response('filelist.html', { 'error': str(err) })
     
     # should be '[filename] has been deleted'
-    return render_to_response('base.html', {'info': file_id + ' has been deleted.'})
+    #return render_to_response('base.html', {'info': file_id + ' has been deleted.'})
+    return redirect('/files')
 
 def purge_uploads(request):
     upload.purge_uploads()
@@ -230,6 +231,7 @@ def template_with_login(request, template):
     "Simple direct-render view that correctly sets vars to display a login or logout link."
     return real_render_to_response(template, user.template_vars())
 
-def render_to_response(template, vars={}, *args, **kwargs):
+def render_to_response(template, tvars=None, *args, **kwargs):
     "A render_to_response replacement that auto-fills required variables."
-    return real_render_to_response(template, user.template_vars(vars), *args, **kwargs)
+    tvars = tvars or {}
+    return real_render_to_response(template, user.template_vars(tvars), *args, **kwargs)
