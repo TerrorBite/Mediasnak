@@ -4,7 +4,7 @@ import exception
 
 def get_user_file_list(user_id, bucketname):
 
-    file_entries = MediaFile.objects.filter(user_id=user_id, upload_time__isnull=False) # retrieve the user's items
+    file_entries = MediaFile.objects.filter(user_id=user_id).filter(uploaded=True) # retrieve the user's items
     
     # file_list_entries is the file information which will be used by the template
     file_list_entries = []
@@ -31,7 +31,7 @@ def get_user_file_list(user_id, bucketname):
     
     
 def search_files(bucketname, user_id, search_by, search_term):
-    file_entries = MediaFile.objects.filter(user_id=user_id)
+    file_entries = MediaFile.objects.filter(user_id=user_id).filter(uploaded=True)
     results = []
 
     #avaliable fields: file_id, filename, upload_time, view_count, comment, category, tags
