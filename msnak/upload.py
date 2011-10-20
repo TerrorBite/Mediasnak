@@ -116,7 +116,7 @@ def process_return_from_upload(bucketname, user_id, key, etag):
     s3util.update_s3_metadata(bucketname, key, {'Content-Type': mimetypes.guess_type(filename)[0]})
     
     return {
-        'url': url,
+        'url': '/download?fileid='+file_id,
         'upload_time': upload_time,
         'filename': filename,
         'mimetype': mimetypes.guess_type(filename)[0]
