@@ -123,4 +123,4 @@ def process_return_from_upload(bucketname, user_id, key, etag):
     }
 
 def purge_uploads():
-    MediaFile.objects.filter(upload_time__lte=(datetime.utcnow()-timedelta(minutes=30))).delete()
+    MediaFile.objects.filter(upload_time__lte=(datetime.utcnow()-timedelta(minutes=30)), uploaded=False).delete()
