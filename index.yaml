@@ -17,6 +17,10 @@ indexes:
 
 - kind: msnak_mediafile
   properties:
+  - name: uploaded
+  - name: upload_time
+
+- kind: msnak_mediafile
+  properties:
   - name: user_id
   - name: upload_time
-  - name: uploaded
