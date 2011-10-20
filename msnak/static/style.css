@@ -122,6 +122,15 @@ div#footer {
     bottom: 0;
     width: 100%;
 }
+.info {
+    font-weight: bold;
+    margin: 1.5em;
+}
+.error {
+    font-weight: bold;
+    color: red;
+    margin: 1.5em;
+}
 
 div.zero {
     /* Used where content is required to force correct positioning */
