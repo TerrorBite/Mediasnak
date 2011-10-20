@@ -16,6 +16,9 @@ h2 {
     width: 100px;
     height: 100px;
 }
+.noentry {
+    color: SeaGreen;
+}
 </style>
 {% endblock %}
 
@@ -33,19 +36,19 @@ h2 {
         <div class="filename">
             <h2>Filename:</h2>
             <span class="entry">
-                {% if editing %}<input type="text" name="filename" value="{% endif %}{{ file_name }}{% if editing %}">{% endif %}
+                {% if editing %}<input type="text" name="filename" value="{% endif %}{% if not editing and not file_name %}<span class="noentry">(none)</span>{% endif %}{{ file_name }}{% if editing %}">{% endif %}
             </span>
         </div>
         <div class="filecategory">
             <h2>Category:</h2>
             <span class="entry">
-                {% if editing %}<input type="text" name="filecategory" value="{% endif %}{{ category }}{% if editing %}">{% endif %}
+                {% if editing %}<input type="text" name="filecategory" value="{% endif %}{% if not editing and not category %}<span class="noentry">(none)</span>{% endif %}{{ category }}{% if editing %}">{% endif %}
             </span>
         </div>
         <div class="filetags">
             <h2>Tags:</h2>
             <span class="entry">
-                {% if editing %}<input type="text" name="filetags" value="{% endif %}{{ tags }}{% if editing %}">{% endif %}
+                {% if editing %}<input type="text" name="filetags" value="{% endif %}{% if not editing and not tags %}<span class="noentry">(none)</span>{% endif %}{{ tags }}{% if editing %}">{% endif %}
             </span>
         </div>
         <div class="filepreview">
@@ -66,7 +69,7 @@ h2 {
         <div class="filecomment">
             <h2>File Comment:</h2>
             <span class="entry">
-                {% if editing %}<textarea name="filecomment">{% endif %}{{ comment }}{% if editing %}</textarea>{% endif %}
+                {% if editing %}<textarea name="filecomment">{% endif %}{% if not editing and not comment %}<span class="noentry">(none)</span>{% endif %}{{ comment }}{% if editing %}</textarea>{% endif %}
             </span>
         </div>
         <div class="downloadlink">
