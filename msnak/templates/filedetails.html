@@ -16,10 +16,6 @@ h2 {
     width: 100px;
     height: 100px;
 }
-.filepreview > image {
-    width: 100px;
-    height: 100px;
-}
 </style>
 {% endblock %}
 
@@ -53,7 +49,7 @@ h2 {
             </span>
         </div>
         <div class="filepreview">
-            <image src="{{ download_url }}">
+            <image src="{{ download_url }}" width="100" height="100" alt="{{ file_name }} preview">
         </div>
         <div class="fileuploadtime">
             <h2>Uploaded:</h2>
