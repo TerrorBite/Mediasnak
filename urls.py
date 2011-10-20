@@ -19,7 +19,6 @@ urlpatterns = patterns('',
     
     ('^files$', 'msnak.views.list_files_page', {}),
     ('^file-details$', 'msnak.views.file_details_page', {}),
-    ('^fileinfo$', 'django.views.generic.simple.direct_to_template', {'template': 'fileinfo.html'}),
 
     ('^cron/purgedb$', 'msnak.views.purge_uploads', {}),
 

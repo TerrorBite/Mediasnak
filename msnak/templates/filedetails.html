@@ -4,17 +4,21 @@
 
 {% block css %}
 <style type="text/css">
-.filedetails>div{
-margin:0.5em;
+.filedetails > div {
+    margin:0.5em;
 }
-h2{
-font-size:1em;
-display:inline;
+h2 {
+    font-size:1em;
+    display:inline;
 }
-.filepreview{
-border:solid black 1px;
-width: 100px;
-height: 100px;
+.filepreview {
+    border:solid black 1px;
+    width: 100px;
+    height: 100px;
+}
+.filepreview > image {
+    width: 100px;
+    height: 100px;
 }
 </style>
 {% endblock %}
@@ -49,7 +53,7 @@ height: 100px;
             </span>
         </div>
         <div class="filepreview">
-            <image src="{{ download_url }}" width="100px" height="100px">
+            <image src="{{ download_url }}">
         </div>
         <div class="fileuploadtime">
             <h2>Uploaded:</h2>
