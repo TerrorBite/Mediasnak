@@ -59,17 +59,14 @@ def upload_success(request):
     key = request.GET['key'] # this was created when upload page was requested
     etag = request.GET['etag'] # unused
     
-    
     try:
         template_vars = upload.process_return_from_upload(bucketname, user_id, key, etag)
     except MediasnakError, err:
         return render_to_response('base.html', { 'error': str(err) })
     
-    template_vars.update({ 'bucket': bucketname, 'key': key, 'etag': etag,
-                           'file_id': key, 'user_id': user_id }) #probably just debugging
-    
-    # Use render_to_response shortcut to fill out the HTML template
-    return render_to_response('upload-success.html', template_vars)
+    # Redirect to the file list page, with a success message
+    info_message = "<h1>Success</h1><p>The file '{{ filename }}' ({{ mimetype }}) was uploaded under the ID '<code>{{ file_id }}</code>' on {{ upload_time }}.</p>"
+    return redirect('msnak.views.list_files_page')
 
 def download_page(request):
     "Displays a page with a link to download a file, or redirects to the download itself."
@@ -98,7 +95,7 @@ def download_page(request):
     
     url = s3util.sign_url('s3.mediasnak.com', key, expiry=60, format=s3util.URL_CUSTOM)
     
-    # Redirect user to the calculated S3 
+    # Redirect user to the calculated S3 download link
     return redirect(url)
 
 def list_files_page(request):
@@ -127,7 +124,6 @@ def list_files_page(request):
         except MediasnakError, err:
             return render_to_response('filelist.html', { 'error': str(err) })
         
-        #template_vars= {'info':'test'}
         return render_to_response('filelist.html', template_vars)
 
     template_vars = listfiles.get_user_file_list(user_id, bucketname)
@@ -215,10 +211,11 @@ def delete_file(request):
         delete.delete_file(bucketname, user_id, file_id)
     except MediasnakError, err:
         return render_to_response('filelist.html', { 'error': str(err) })
+        
     
     # should be '[filename] has been deleted'
     #return render_to_response('base.html', {'info': file_id + ' has been deleted.'})
-    return redirect('/files')
+    return redirect('msnak.views.list_files_page')
 
 def purge_uploads(request):
     upload.purge_uploads()
