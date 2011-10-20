@@ -19,3 +19,4 @@ indexes:
   properties:
   - name: user_id
   - name: upload_time
+  - name: uploaded
