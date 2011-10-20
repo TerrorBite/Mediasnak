@@ -2,9 +2,13 @@
 from models import MediaFile # Database table for files
 import exception
 
-def get_user_file_list(user_id, bucketname):
+def get_user_file_list(user_id, bucketname, orderby=None):
 
     file_entries = MediaFile.objects.filter(user_id=user_id).filter(uploaded=True) # retrieve the user's items
+    
+    # Currently in links, ['name', 'type', 'date', 'cat', 'meta'], could convert them
+    if orderby and orderby in ['filename', 'upload_time', 'view_count', 'category']:
+        file_entries = file_entries.order_by(orderby)
     
     # file_list_entries is the file information which will be used by the template
     file_list_entries = []
@@ -30,8 +34,13 @@ def get_user_file_list(user_id, bucketname):
     }
     
     
-def search_files(bucketname, user_id, search_by, search_term):
+def search_files(bucketname, user_id, search_by, search_term, orderby=None):
     file_entries = MediaFile.objects.filter(user_id=user_id).filter(uploaded=True)
+    
+    # Currently in links, ['name', 'type', 'date', 'cat', 'meta'], could convert them
+    if orderby and orderby in ['filename', 'upload_time', 'view_count', 'category']:
+        file_entries = file_entries.order_by(orderby)
+        
     results = []
 
     #avaliable fields: file_id, filename, upload_time, view_count, comment, category, tags

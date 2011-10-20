@@ -107,6 +107,10 @@ def list_files_page(request):
     # This might be useful, to use the same page to list files in a category, or even for searches
     # category = request.GET['category']
     
+    orderby = None
+    if 'sort' in request.GET:
+        orderby = request.GET['sort']
+    
     #def search_files(request):
     #"displays a list of files matching the request"
     if 'searchterm' in request.GET:
@@ -120,13 +124,13 @@ def list_files_page(request):
             #.. return render_to_response('base.html',{'error':'Nothing specified to search by.'})
         
         try:
-            template_vars = listfiles.search_files(bucketname, user_id, search_by, search_term);
+            template_vars = listfiles.search_files(bucketname, user_id, search_by, search_term, orderby);
         except MediasnakError, err:
             return render_to_response('filelist.html', { 'error': str(err) })
         
         return render_to_response('filelist.html', template_vars)
 
-    template_vars = listfiles.get_user_file_list(user_id, bucketname)
+    template_vars = listfiles.get_user_file_list(user_id, bucketname, orderby)
 
     return render_to_response('filelist.html', template_vars)
 
