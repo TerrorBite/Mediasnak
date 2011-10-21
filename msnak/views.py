@@ -14,6 +14,7 @@ from django import http
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import etag
 from django.views.decorators.vary import vary_on_headers
+from django.db.models import F
 from models import MediaFile # Database table for files
 from exception import MediasnakError
 import s3util, upload, listfiles, user, hashlib, delete
@@ -92,7 +93,11 @@ def download_page(request):
         return response
     
     key = 'u/'+file_id
+
+    # Increment view count
+    MediaFile.objects.filter(file_id=file_id).update(view_count=F("view_count")+1)
     
+    # Sign a URL for the user
     url = s3util.sign_url('s3.mediasnak.com', key, expiry=60, format=s3util.URL_CUSTOM)
     
     # Redirect user to the calculated S3 download link
