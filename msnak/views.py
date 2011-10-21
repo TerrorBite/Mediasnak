@@ -7,14 +7,13 @@ Contains the custom Django views for the Mediasnak application.
 """
 
 from django.http import HttpResponse
-# A little trickery follows: render_to_response is imported with an altered name
-# as we now provide a "fake" render_to_response that adds some stuff we need.
-from django.shortcuts import redirect, render_to_response as real_render_to_response
+from django.shortcuts import redirect, render_to_response
 from django import http
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import etag
 from django.views.decorators.vary import vary_on_headers
-from django.db.models import F
+from django.db.models import F # used in Download view
+from django.template import RequestContext, loader
 from models import MediaFile # Database table for files
 from exception import MediasnakError
 import s3util, upload, listfiles, user, hashlib, delete
@@ -41,7 +40,7 @@ def upload_form(request):
     page_parameters = upload.upload_form_parameters(bucketname, user_id)
     
     # Use render_to_response to fill out the HTML template
-    return render_to_response('upload.html', page_parameters)
+    return render_to_response('upload.html', page_parameters, context_instance=RequestContext(request))
 
 def upload_success(request):
     "Handles the return process from S3 upload produced by upload_form and returns a success page to the user."
@@ -55,7 +54,7 @@ def upload_success(request):
 
     if request.GET['bucket'] != 's3.mediasnak.com': # 'magic-string', could maybe put in S3utils
         error = "Apparently somehow this file was uploaded to the wrong bucket or the wrong bucket is being returned."
-        return render_to_response('base.html', { 'error': error })
+        return render_error(request, error)
     bucketname = request.GET['bucket']
     key = request.GET['key'] # this was created when upload page was requested
     etag = request.GET['etag'] # unused
@@ -63,7 +62,7 @@ def upload_success(request):
     try:
         template_vars = upload.process_return_from_upload(bucketname, user_id, key, etag)
     except MediasnakError, err:
-        return render_to_response('base.html', { 'error': str(err) })
+        return render_error(request, err)
     
     # Redirect to the file list page, with a success message
     info_message = "<h1>Success</h1><p>The file '{{ filename }}' ({{ mimetype }}) was uploaded under the ID '<code>{{ file_id }}</code>' on {{ upload_time }}.</p>"
@@ -74,23 +73,19 @@ def download_page(request):
     # The friendly download link isn't necessarily part of a story, but is good functionality atleast for our use
     
     if 'fileid' not in request.GET:
-        return render_to_response('base.html', { 'error': 'No file specified' })
-        # redirect to homepage or something
+        return render_error(request, "You did not specify which file to download.", 'filelist.html')
+        # displays filelist upon error
     file_id = request.GET['fileid']
     
     try:
         file_entry = MediaFile.objects.get(file_id=file_id)
     except MediaFile.DoesNotExist:
         # Essentially a 404, what else could we do with the return?
-        response = render_to_response('base.html', { 'error': "Not Found: The file you are trying to access does not exist." })
-        response.status_code = 404
-        return response
+        return render_error(request, "Not Found: The file you are trying to download does not exist.", status=404)
 
     if file_entry.user_id != user.get_user_id():
         # Essentially a 403
-        response = render_to_response('base.html', { 'error': "Forbidden: You are trying to access a file that you didn't upload." })
-        response.status_code = 403
-        return response
+        return render_error(request, "Forbidden: You are trying to access a file that you didn't upload.", status=403)
     
     key = 'u/'+file_id
 
@@ -131,13 +126,13 @@ def list_files_page(request):
         try:
             template_vars = listfiles.search_files(bucketname, user_id, search_by, search_term, orderby);
         except MediasnakError, err:
-            return render_to_response('filelist.html', { 'error': str(err) })
+            return render_error(request, err, 'filelist.html')
         
-        return render_to_response('filelist.html', template_vars)
+        return render_to_response('filelist.html', template_vars, context_instance=RequestContext(request))
 
     template_vars = listfiles.get_user_file_list(user_id, bucketname, orderby)
 
-    return render_to_response('filelist.html', template_vars)
+    return render_to_response('filelist.html', template_vars, context_instance=RequestContext(request))
 
 
 def file_details_page(request):
@@ -149,7 +144,7 @@ def file_details_page(request):
     bucketname = "s3.mediasnak.com"
 
     if 'fileid' not in request.GET:
-        return render_to_response('filelist.html', {'error': 'No fileid was included. Please choose a file.'})
+        return render_error(request, "You did not specify which file to view the details of.", 'filelist.html')
     file_id = request.GET['fileid']
     
     editing = 'edit' in request.GET and request.GET['edit'] == "true"
@@ -159,9 +154,9 @@ def file_details_page(request):
         file_entry = MediaFile.objects.get(file_id=file_id)
     except MediaFile.DoesNotExist:
         # Essentially a 404, what else could we do with the page?
-        return render_to_response('base.html', { 'error': 'There seems to have been no file by this fileid!' })
+        return render_error(request, 'There is no file by this ID!', status=404)
     except MediaFile.MultipleObjectsReturned:
-        return render_to_response('base.html', { 'error': 'There seems to be multiple files by this fileid!' })
+        return render_error(request, 'There are multiple files by this ID - this shouldn\'t happen!')
 
     # Process edits to details if they have been submitted
     
@@ -204,7 +199,7 @@ def file_details_page(request):
         'category' : file_entry.category,
         'tags' : file_entry.tags
     }
-    return render_to_response('filedetails.html', template_vars)
+    return render_to_response('filedetails.html', template_vars, context_instance=RequestContext(request))
 
 def delete_file(request):
     "Posting a fileid to this view permanently deletes the file from the system, including file stored on S3, and all metadata"
@@ -213,13 +208,13 @@ def delete_file(request):
     bucketname = "s3.mediasnak.com"
     
     if 'fileid' not in request.POST:
-        return render_to_response('filelist.html', {'error': 'No fileid was specified. Please choose a file'})
+        return render_error(request, 'You did not specify which file to delete.', 'filelist.html')
     file_id = request.POST['fileid']
     
     try:
         delete.delete_file(bucketname, user_id, file_id)
     except MediasnakError, err:
-        return render_to_response('filelist.html', { 'error': str(err) })
+        return render_error(request, err, 'filelist.html')
         
     
     # should be '[filename] has been deleted'
@@ -230,14 +225,11 @@ def purge_uploads(request):
     upload.purge_uploads()
     return HttpResponse(status=204) # 204 OK No Response
 
-# Hash the User ID and use it as the ETag. This should solve caching issues.
-@etag(login_template_etag)
-#@vary_on_headers('Cookie')
-def template_with_login(request, template):
-    "Simple direct-render view that correctly sets vars to display a login or logout link."
-    return real_render_to_response(template, user.template_vars())
-
-def render_to_response(template, tvars=None, *args, **kwargs):
-    "A render_to_response replacement that auto-fills required variables."
-    tvars = tvars or {}
-    return real_render_to_response(template, user.template_vars(tvars), *args, **kwargs)
+def render_error(request, error_str, template='base.html', status=200):
+    if type(error_str) is not str:
+        error_str = repr(error_str)
+    t = loader.get_template(template)
+    c = RequestContext(request, {'error': error_str})
+    resp = HttpResponse(t.render(c))
+    resp.status_code = status
+    return resp

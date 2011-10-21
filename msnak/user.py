@@ -11,15 +11,17 @@ def is_logged_in():
     if users.get_current_user(): return True
     return False
 
-def template_vars(vdict=None):
-    "Adds variables required for the base template to display login/logout links."
-    vdict = vdict or {}
+def template_vars(request):
+    """
+    A context processor.
+    
+    Returns variables required for the base template to display login/logout links.
+    """
     user = users.get_current_user()
     if user:
-        vdict.update({'username': user.nickname(), 'logout_url': users.create_logout_url('/')})
+        return {'username': user.nickname(), 'logout_url': users.create_logout_url('/')}
     else:
-        vdict.update({'login_url': users.create_login_url('/')})
-    return vdict
+        return {'login_url': users.create_login_url('/')}
 
 def get_user_id():
     user = users.get_current_user()

@@ -14,9 +14,7 @@ AUTOLOAD_SITECONF = 'indexes'
 SECRET_KEY = access_keys.secret
 
 INSTALLED_APPS = (
-    #'django.contrib.admin',
     'django.contrib.contenttypes',
-    #'django.contrib.auth',
     'django.contrib.sessions',
     'djangotoolbox',
     'autoload',
@@ -33,13 +31,11 @@ MIDDLEWARE_CLASSES = (
 
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    #'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
-    #'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.request',
-    #'django.core.context_processors.media',
+    'msnak.user.template_vars', # Insert the username and login/logout vars into templates
 )
 
 # This test runner captures stdout and associates tracebacks with their
