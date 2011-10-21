@@ -76,38 +76,49 @@ div#hfloat { /* user logged in section */
     float: right;
 }
 div#navbar {
+    text-align: center;
+    overflow: hidden;
+    width: 100%;
+}
+div#navbar-inner {
+    margin-left: -5px;
     font-size: 0;
-    text-align: left;
     border-top: solid thin #ccc;
     border-bottom: solid thin #ccc;
+    width: 810px;
 }
 div#navbar a {
+    text-align: left;
     font-size: 14pt;
     border-right: solid thin #ccc;
     text-align: center;
     display: inline-block;
-    width: 120px;
+    width: 134px;
+}
+div#navbar a:last-child {
+    border-right: none;
 }
 div#navbar a:hover {
     background-color: #475;
     color: white;
 }
 #searchform {
-    width: 310px;
+    width: 150px;
     font-size: 12pt;
-    float: right;
-    display: inline-block;
-    vertical-align: middle;
+    text-align: center;
 }
 #searchbox {
     padding: 0;
     margin: 0;
-    width: 220px;
+    width: 146px;
 }
 #submit {
     padding: 0;
     margin: 0;
-    width: 80px;
+    width: 53px;
+}
+.searchby {
+    width: 93px;
 }
 div.navlink {
     padding: 2px 0;
