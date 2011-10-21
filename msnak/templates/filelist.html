@@ -6,6 +6,37 @@
 {% block extra-head %}
 {% endblock %}
 
+{% block css %}
+<style type="text/css">
+    div.filelist {
+        display: table;
+        width: 98%;
+    }
+    div.fileentry {
+        display: table-row;
+    }
+    div.filelistheader {
+        display: table-header-group;
+    }
+    div.fileentry span, div.filelistheader span {
+        display: table-cell;
+    }
+    form {
+        margin: 0;
+        padding: 0;
+    }
+    .delbutton {
+        font-size: inherit;
+        background: none;
+        cursor: pointer;
+        margin: 0;
+        border: none;
+        font-weight: bold;
+        color: #475;
+    }
+</style>
+{% endblock %}
+
 {% block sidebar %}
 Browse by Type:<br>
 <a href="?type=all">All</a><br>
@@ -35,6 +66,26 @@ Sort by:<br>
 {# TODO: INTEGRATE NEW FILE-LIST TEMPLATE WITH THIS FILE #}
 
 <div class="filelist">
+    <div class="filelistheader">
+        <span>
+            Filename
+        </span>
+        <span>
+            Time Uploaded
+        </span>
+        <span>
+            Viewcount
+        </span>
+        <span>
+            Details
+        </span>
+        <span>
+            Download
+        </span>
+        <span>
+            Delete
+        </span>
+    </div>
 {% for f in file_list_entries %}
     <div class="fileentry">
         <span class="filename">
@@ -46,16 +97,23 @@ Sort by:<br>
         <span class="fileviewcount">
             {{ f.view_count }}
         </span>
-        <span class="fileurl">
-            <a href="{{ f.download_url }}">download</a>
-        </span>
         <span class="fileinfourl">
-            <a href="file-details?fileid={{ f.file_id }}">details</a>
+            {# <a href="/file-details?fileid={{ f.file_id }}">details</a> #}
+            <form action="/file-details" method="GET">
+                <input type="submit" value="Details">
+                <input type="hidden" name="fileid" value="{{ f.file_id }}">
+            </form>
+        </span>
+        <span class="fileurl">
+            <form action="/download" method="GET">
+                <input type="submit" value="Download">
+                <input type="hidden" name="fileid" value="{{ f.file_id }}">
+            </form>
         </span>
         <span class="filedelete">
             <form action="/delete" method="POST">
+                <input type="submit" value="Delete">
                 <input type="hidden" name="fileid" value="{{ f.file_id }}">
-                <input type="submit" name="submit" value="Delete">
             </form>
         </span>
     </div>
