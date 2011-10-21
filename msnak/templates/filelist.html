@@ -32,9 +32,13 @@
         background-color: #ced;
     }
     div.fileentry span, div.filelistheader span {
+        /* "Table Cell" */
         display: table-cell;
         padding: 0.2em 0.4em;
         text-align: center;
+    }
+    div.fileentry span {
+        font-size: 80%;
     }
     div.filelistheader span {
         border-bottom: solid thin #ccc;
@@ -51,6 +55,12 @@
         border: none;
         font-weight: bold;
         color: #475;
+    }
+    .filename {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 180px;
     }
 </style>
 {% endblock %}
@@ -89,10 +99,10 @@ Sort by:<br>
             Filename
         </span>
         <span>
-            Time Uploaded
+            Uploaded
         </span>
         <span>
-            Viewcount
+            Views
         </span>
         <span>
             Details
@@ -106,23 +116,22 @@ Sort by:<br>
     </div>
 {% for f in file_list_entries %}
     <div class="fileentry">
-        <span class="filename">
+        <span class="filename" title="{{ f.name }}">
             {{ f.name }}
         </span>
-        <span class="fileuploadtime">
+        <span class="filetime">
             {{ f.upload_time }}
         </span>
-        <span class="fileviewcount">
+        <span class="fileviews">
             {{ f.view_count }}
         </span>
-        <span class="fileinfourl">
-            {# <a href="/file-details?fileid={{ f.file_id }}">details</a> #}
+        <span class="filedetails">
             <form action="/file-details" method="GET">
                 <input type="submit" value="Details">
                 <input type="hidden" name="fileid" value="{{ f.file_id }}">
             </form>
         </span>
-        <span class="fileurl">
+        <span class="filedownload">
             <form action="/download" method="GET">
                 <input type="submit" value="Download">
                 <input type="hidden" name="fileid" value="{{ f.file_id }}">
