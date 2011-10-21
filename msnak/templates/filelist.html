@@ -8,18 +8,36 @@
 
 {% block css %}
 <style type="text/css">
+    div#content {
+        /* this is kinda retarded */
+        padding: 0 0 0 1px;
+    }
     div.filelist {
         display: table;
-        width: 98%;
+        width: 100%;
+        margin: 0;
     }
     div.fileentry {
         display: table-row;
+        margin: auto 0;
+    }
+    div.fileentry:nth-child(odd) {
+        background-color: #efe;
+    }
+    div.fileentry:nth-child(even) {
+        background-color: #fff;
     }
     div.filelistheader {
         display: table-header-group;
+        background-color: #ced;
     }
     div.fileentry span, div.filelistheader span {
         display: table-cell;
+        padding: 0.2em 0.4em;
+        text-align: center;
+    }
+    div.filelistheader span {
+        border-bottom: solid thin #ccc;
     }
     form {
         margin: 0;
