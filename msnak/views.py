@@ -111,6 +111,11 @@ def list_files_page(request):
     if 'sort' in request.GET:
         orderby = request.GET['sort']
     
+    # We use this to change the view type
+    viewtype = 'thumb'
+    if 'view' in request.GET:
+        viewtype = request.GET['view']
+    
     #def search_files(request):
     #"displays a list of files matching the request"
     if 'searchterm' in request.GET:
@@ -131,6 +136,9 @@ def list_files_page(request):
         return render_to_response('filelist.html', template_vars, context_instance=RequestContext(request))
 
     template_vars = listfiles.get_user_file_list(user_id, bucketname, orderby)
+    template_vars.update({
+        'view': viewtype,
+        })
 
     return render_to_response('filelist.html', template_vars, context_instance=RequestContext(request))
 
@@ -146,7 +154,7 @@ def file_details_page(request):
     if 'fileid' not in request.GET:
         return render_error(request, "You did not specify which file to view the details of.", 'filelist.html')
     file_id = request.GET['fileid']
-    
+
     editing = 'edit' in request.GET and request.GET['edit'] == "true"
     # Note: Python's "and" does short-circuit evaluation
     
