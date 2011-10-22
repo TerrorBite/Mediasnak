@@ -8,6 +8,10 @@
 
 {% block css %}
 <style type="text/css">
+    {# Common styles #}
+    .red:hover {
+        color: red;
+    }
     {% ifequal view "list" %}
     div#content {
         /* this is kinda retarded */
@@ -44,18 +48,10 @@
     div.filelistheader span {
         border-bottom: solid thin #ccc;
     }
-    form {
+    div.fileentry span form {
         margin: 0;
         padding: 0;
-    }
-    .delbutton {
-        font-size: inherit;
-        background: none;
-        cursor: pointer;
-        margin: 0;
-        border: none;
-        font-weight: bold;
-        color: #475;
+        display: inline-block;
     }
     .filename {
         overflow: hidden;
@@ -70,7 +66,7 @@
     }
     img.thumbimg {
         width: 200px;
-        height: 200px;
+        height: 150px;
     }
     div.thumbitem {
         font-size: 10pt;
@@ -142,13 +138,7 @@ Sort by:<br>
             Views
         </span>
         <span>
-            Details
-        </span>
-        <span>
-            Download
-        </span>
-        <span>
-            Delete
+            &nbsp;
         </span>
     </div>
     {% for f in file_list_entries %}
@@ -162,21 +152,17 @@ Sort by:<br>
         <span class="fileviews">
             {{ f.view_count }}
         </span>
-        <span class="filedetails">
+        <span class="filebuttons">
             <form action="/file-details" method="GET">
                 <input type="submit" value="Details">
                 <input type="hidden" name="fileid" value="{{ f.file_id }}">
             </form>
-        </span>
-        <span class="filedownload">
             <form action="/download" method="GET">
                 <input type="submit" value="Download">
                 <input type="hidden" name="fileid" value="{{ f.file_id }}">
             </form>
-        </span>
-        <span class="filedelete">
             <form action="/delete" method="POST">
-                <input type="submit" value="Delete">
+                <input type="submit" value="Delete" class="red">
                 <input type="hidden" name="fileid" value="{{ f.file_id }}">
             </form>
         </span>
@@ -202,7 +188,7 @@ Sort by:<br>
         <input type="hidden" name="fileid" value="{{ f.file_id }}">
     </form>
     <form action="/delete" method="POST" style="float: right;">
-        <input type="submit" value="Delete">
+        <input type="submit" value="Delete" class="red">
         <input type="hidden" name="fileid" value="{{ f.file_id }}">
     </form>
 </div>   
