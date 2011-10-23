@@ -64,9 +64,14 @@
         padding: 0;
         font-size: 0;
     }
-    img.thumbimg {
+    div.imgbox {
+        text-align: center;
         width: 200px;
         height: 150px;
+    }
+    img.thumbimg {
+        max-width: 200px;
+        max-height: 150px;
     }
     div.thumbitem {
         font-size: 10pt;
@@ -177,7 +182,7 @@ Sort by:<br>
 {% for f in file_list_entries %}
 <div class="thumbitem">
     <div class="thumbtitle">{{ f.name }}</div>
-    <img class="thumbimg" src="/thumb?fileid={{ f.fileid }}" alt="{{ f.name }}" title="{{ f.name }}"><br>
+    <div class="imgbox"><img class="thumbimg" src="/thumb?fileid={{ f.file_id }}" alt="{{ f.name }}" title="{{ f.name }}"></div>
     <form action="/download" method="GET">
         <input type="submit" value="Download">
         <input type="hidden" name="fileid" value="{{ f.file_id }}">

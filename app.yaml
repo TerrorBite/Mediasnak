@@ -5,6 +5,7 @@ api_version: 1
 
 builtins:
 - remote_api: on
+- deferred: on
 
 inbound_services:
 - warmup
@@ -33,6 +34,15 @@ handlers:
 - url: /cron/.*
   script: djangoappengine/main/main.py
   login: admin
+
+# Static files (stylesheet, etc)
+- url: /static
+  static_dir: msnak/static
+
+# Special static file rule for robots.txt
+- url: /robots.txt
+  static_files: msnak/static/robots.txt
+  upload: msnak/static/robots.txt  
 
 # Handler for content not requiring user login
 # (main page, static content, about pages)

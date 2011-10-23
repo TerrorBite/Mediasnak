@@ -142,6 +142,36 @@ def list_files_page(request):
 
     return render_to_response('filelist.html', template_vars, context_instance=RequestContext(request))
 
+def get_thumbnail(request):
+    # most of this is copied from the download page above
+
+    if 'fileid' not in request.GET:
+        return render_error(request, "You did not specify a file.", 'filelist.html')
+        # displays filelist upon error
+    file_id = request.GET['fileid']
+    
+    try:
+        file_entry = MediaFile.objects.get(file_id=file_id)
+    except MediaFile.DoesNotExist:
+        # Essentially a 404, what else could we do with the return?
+        return render_error(request, "Not Found: The thumbnail you are trying to access does not exist.", status=404)
+
+    if file_entry.user_id != user.get_user_id():
+        # Essentially a 403
+        return render_error(request, "Forbidden: You are trying to access a thumbnail for file that you didn't upload.", status=403)
+    
+    if not file_entry.has_thumb:
+        #TODO: Return correct type of thumbnail based on content-type or category
+        if file_entry.category in ('image', 'video', 'audio'):
+            return redirect('/static/%s_thumb.png' % (file_entry.category,))
+        return redirect('/static/generic_thumb.png')
+    key = 't/'+file_id
+
+    # Sign a URL for the user
+    url = s3util.sign_url('s3.mediasnak.com', key, expiry=60, format=s3util.URL_CUSTOM)
+    
+    # Redirect user to the calculated S3 download link
+    return redirect(url)
 
 def file_details_page(request):
     "Displays the page with the detailed metadata about a file"

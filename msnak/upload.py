@@ -6,6 +6,13 @@ from msnak.s3util import hmac_sign
 import access_keys, os, mimetypes
 from models import MediaFile # Database table for files
 import exception
+from google.appengine.api import images
+from boto.s3.connection import S3Connection
+from boto.s3.key import Key
+try:
+    from google.appengine.ext import deferred
+except ImportError:
+    deferred = None # Workaround for buggy dev server
 
 # Note: I know it's a one-line function which is only used once in the code
 # but it's got a bit complex and has a seperate function than the rest of the code,
@@ -53,7 +60,7 @@ def upload_form_parameters(bucketname, user_id):
     # and also ensure it was a valid upload
     # The filename, upload time and view count will be filled in later (just setting upload time to the current time for now)
     # User ID may also be checked later
-    file_entry = MediaFile(file_id=file_id, uploaded=False, user_id=user_id, filename='', upload_time=datetime.utcnow(), view_count=0)
+    file_entry = MediaFile(file_id=file_id, uploaded=False, user_id=user_id, filename='', upload_time=datetime.utcnow(), view_count=0, has_thumb=False)
     file_entry.save()
     
     return { 'key': s3_key, 'aws_id': access_keys.key_id, 'policy': policy, 'signature': signature, 'return_host': os.environ['HTTP_HOST'], 'user_id': user_id }
@@ -70,9 +77,6 @@ def process_return_from_upload(bucketname, user_id, key, etag):
         # What to do now?
         # Either user could re-upload the file,
         # or the system could simply create the file_id now instead assuming there's no reason not to
-        #return {
-        #    'error': "There seems to have been no file set-up for this upload."
-        #}
         raise exception.MediasnakError("There seems to have been no file set-up for this upload.")
     except MediaFile.MultipleObjectsReturned:
         ## this error should never occur due to primary key constraint ##
@@ -103,17 +107,29 @@ def process_return_from_upload(bucketname, user_id, key, etag):
     
     # check that this etag matches this key?
     
-    upload_time = datetime.utcnow()
+    # Determine filetype, and subsequently, category
+    ctype = mimetypes.guess_type(filename)[0]
 
-    # Set the file status as uploaded in database
+    cat = ctype.split('/')[0]
+    if cat not in ('image', 'video', 'audio'):
+        cat = 'other'
+
+    # Set the file status as uploaded in database, update file name and category
     file_entry.filename=filename
-    file_entry.upload_time=upload_time
+    file_entry.upload_time=datetime.utcnow()
     file_entry.uploaded=True
+    file_entry.category=cat
     file_entry.save()
-    # Now everything for the file entry except view_count should now be filled in
+    # Now everything should be filled in, except user-defined fields such as comment and tags
     
     # Update mimetype stored on S3
-    s3util.update_s3_metadata(bucketname, key, {'Content-Type': mimetypes.guess_type(filename)[0]})
+    s3util.update_s3_metadata(bucketname, key, {'Content-Type': ctype})
+
+    # Launch background task to generate a thumbnail
+    if deferred:
+        deferred.defer(generate_thumbnail, file_id, ctype)
+    else: # Workaround for buggy dev server
+        generate_thumbnail(file_id, ctype)
     
     return {
         'url': '/download?fileid='+file_id,
@@ -121,6 +137,34 @@ def process_return_from_upload(bucketname, user_id, key, etag):
         'filename': filename,
         'mimetype': mimetypes.guess_type(filename)[0]
     }
+
+# This is the background task function that generates a thumbnail
+def generate_thumbnail(file_id, content_type):
+    bucketname = 's3.mediasnak.com'
+    if content_type.startswith('image/'):
+        botoconn = S3Connection(access_keys.key_id, access_keys.secret, is_secure=False)
+        bucket = botoconn.create_bucket(bucketname)
+
+        # Locate and download image to thumbnail, unless it's too big
+        k = bucket.get_key('u/'+file_id)
+        if k.size > 30000000:
+            return
+        data = k.get_contents_as_string()
+
+        # Resize the image
+        img = images.Image(image_data=data)
+        img.resize(width=200, height=150)
+        thumb = img.execute_transforms(output_encoding=images.JPEG)
+
+        # Store the image on S3
+        tk = Key(bucket, name='t/'+file_id)
+        tk.content_type = 'image/jpeg'
+        tk.set_contents_from_string(thumb)
+
+        # No error-checking here as our calling function already did it for us
+        file_entry = MediaFile.objects.get(file_id=file_id)
+        file_entry.has_thumb = True
+        file_entry.save()
 
 def purge_uploads():
     MediaFile.objects.filter(uploaded=False).filter(upload_time__lte=(datetime.utcnow()-timedelta(minutes=30))).delete()
