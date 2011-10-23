@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load msnak %}
 
 {% block title %}All Files{% endblock %}
 {% block header-title %}All Files{% endblock %}
@@ -182,7 +183,7 @@ Sort by:<br>
 {% for f in file_list_entries %}
 <div class="thumbitem">
     <div class="thumbtitle">{{ f.name }}</div>
-    <div class="imgbox"><img class="thumbimg" src="/thumb?fileid={{ f.file_id }}" alt="{{ f.name }}" title="{{ f.name }}"></div>
+    <div class="imgbox"><img class="thumbimg" src="{{ f.file_id|thumbnail_url }}" alt="{{ f.name }}" title="{{ f.name }}"></div>
     <form action="/download" method="GET">
         <input type="submit" value="Download">
         <input type="hidden" name="fileid" value="{{ f.file_id }}">

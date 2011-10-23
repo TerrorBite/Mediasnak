@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load msnak %}
 
 {% block title %}{% if editing %}Editing {% endif %}'{{ file_name }}' Details{% endblock %}
 
@@ -12,9 +13,15 @@ h2 {
     display:inline;
 }
 .filepreview {
-    border:solid black 1px;
-    width: 100px;
-    height: 100px;
+    float: right;
+    border: solid black 1px;
+    width: 200px;
+    height: 150px;
+    text-align: center;
+}
+.previewimg {
+    max-width: 200px;
+    max-height: 150px;
 }
 .noentry {
     color: SeaGreen;
@@ -23,8 +30,11 @@ h2 {
 {% endblock %}
 
 {% block sidebar %}
-{% if not editing %}<a href="{# request.get_full_path #}/file-details?fileid={{ file_id }}&edit=true">Edit Details</a>{% endif %}
-{% if editing %}<a href="/file-details?fileid={{ file_id }}">Don't Edit</a>{% endif %}
+<form action="/file-details" method="GET">
+    <input type="hidden" name="fileid" value="{{ file_id }}">
+    <input type="hidden" name="edit" value="{{ editing|edit }}">
+    <input type="submit" value="{%if editing%}Cancel Edit{%else%}Edit Details{%endif%}">
+</form>
 {% endblock %}
 
 
@@ -33,6 +43,9 @@ h2 {
 <form method="post">
 {% endif %}
     <div class="filedetails">
+        <div class="filepreview">
+            <img src="{{ file_id|thumbnail_url }}" class="previewimg" alt="{{ file_name }} preview">
+        </div>
         <div class="filename">
             <h2>Filename:</h2>
             <span class="entry">
@@ -50,9 +63,6 @@ h2 {
             <span class="entry">
                 {% if editing %}<input type="text" name="filetags" value="{% endif %}{% if not editing and not tags %}<span class="noentry">(none)</span>{% endif %}{{ tags }}{% if editing %}">{% endif %}
             </span>
-        </div>
-        <div class="filepreview">
-            <image src="{{ download_url }}" width="100" height="100" alt="{{ file_name }} preview">
         </div>
         <div class="fileuploadtime">
             <h2>Uploaded:</h2>
@@ -72,11 +82,13 @@ h2 {
                 {% if editing %}<textarea name="filecomment">{% endif %}{% if not editing and not comment %}<span class="noentry">(none)</span>{% endif %}{{ comment }}{% if editing %}</textarea>{% endif %}
             </span>
         </div>
-        <div class="downloadlink">
-            <a href="{{ download_url }}">Download '{{ file_name }}'</a>
-        </div>
         {% if editing %}
-            <input type="submit" name="submit" value="Submit Edits">
+        <input type="submit" name="submit" value="Submit Edits">
+        {% else %}
+        <form class="downloadlink" action="/download" method="GET">
+            <input type="hidden" name="fileid" value="{{ file_id }}">
+            <input type="submit" value="Download File">
+        </form>
         {% endif %}
     </div>
 {% if editing %}

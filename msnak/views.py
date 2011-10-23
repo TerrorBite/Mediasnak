@@ -229,7 +229,6 @@ def file_details_page(request):
     template_vars = {
         'editing' : editing,
         'file_id' : file_entry.file_id,
-        'download_url' : '/download?fileid='+file_entry.file_id,
         'file_name' : file_entry.filename,
         'upload_time' : file_entry.upload_time,
         'view_count' : file_entry.view_count,
