@@ -110,9 +110,12 @@ def process_return_from_upload(bucketname, user_id, key, etag):
     # Determine filetype, and subsequently, category
     ctype = mimetypes.guess_type(filename)[0]
 
-    cat = ctype.split('/')[0]
-    if cat not in ('image', 'video', 'audio'):
-        cat = 'other'
+    # Make sure mimetype isn't None
+    if ctype:
+        cat = ctype.split('/')[0]
+        if cat not in ('image', 'video', 'audio'):
+            cat = 'other'
+    else: cat = 'other'
 
     # Set the file status as uploaded in database, update file name and category
     file_entry.filename=filename
@@ -122,8 +125,12 @@ def process_return_from_upload(bucketname, user_id, key, etag):
     file_entry.save()
     # Now everything should be filled in, except user-defined fields such as comment and tags
     
-    # Update mimetype stored on S3
-    s3util.update_s3_metadata(bucketname, key, {'Content-Type': ctype})
+    # Update mimetype stored on S3, if we got one. If not, it remains the default application/octet-stream
+    if ctype:
+        try:
+            s3util.update_s3_metadata(bucketname, key, {'Content-Type': ctype})
+        except:
+            pass # TODO: need to make a record of errors
 
     # Launch background task to generate a thumbnail
     if deferred:
