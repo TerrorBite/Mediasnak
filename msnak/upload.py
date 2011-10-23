@@ -133,7 +133,7 @@ def process_return_from_upload(bucketname, user_id, key, etag):
     
     return {
         'url': '/download?fileid='+file_id,
-        'upload_time': upload_time,
+        'upload_time': file_entry.upload_time,
         'filename': filename,
         'mimetype': mimetypes.guess_type(filename)[0]
     }
