@@ -12,12 +12,19 @@ from django import http
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import etag
 from django.views.decorators.vary import vary_on_headers
+from django.views.decorators.csrf import csrf_protect
 from django.db.models import F # used in Download view
 from django.template import RequestContext, loader
 from models import MediaFile # Database table for files
 from exception import MediasnakError
 import s3util, upload, listfiles, user, hashlib, delete
 from os import environ
+
+import logging
+if hasattr(logging, 'setLevel'):
+    logging.setLevel(logging.DEBUG)
+else:
+    logging.disable(logging.DEBUG)
 
 # A note on returning errors and infos:
 # req.META['HTTP_REFERER'] (sic) gets you the last page the user was on
@@ -33,12 +40,13 @@ def login_template_etag(request, *args, **kwargs):
 @cache_control(no_cache=True, max_age=0)
 def upload_form(request):
     "Produces an upload form for submitting files to S3."
-
+    logging.debug("Started upload view")
     bucketname = "s3.mediasnak.com"
     user_id = user.get_user_id()
 
     page_parameters = upload.upload_form_parameters(bucketname, user_id)
     
+    logging.debug("Completed upload view")
     # Use render_to_response to fill out the HTML template
     return render_to_response('upload.html', page_parameters, context_instance=RequestContext(request))
 
@@ -211,17 +219,19 @@ def file_details_page(request):
     # does not check lengths for instance
     #also, how does django display values (does it encode html special characters?)
     
-    if 'submit' in request.POST and request.POST['submit'] == 'Submit Edits':
-        if 'filename' in request.POST:
-            file_entry.filename = request.POST['filename']
-        if 'fileviewcount' in request.POST:
-            file_entry.view_count = request.POST['fileviewcount']
-        if 'filecomment' in request.POST:
-            file_entry.comment = request.POST['filecomment']
-        if 'filecategory' in request.POST:
-            file_entry.category = request.POST['filecategory']
-        if 'filetags' in request.POST:
-            file_entry.tags = request.POST['filetags']
+    if 'submit_changes' in request.POST:
+        if 'f_title' in request.POST:
+            file_entry.title = request.POST['f_title']
+        if 'f_name' in request.POST: # Should filename be editable?
+            file_entry.filename = request.POST['f_name']
+        if 'f_viewcount' in request.POST: # Should viewcount be editable?
+            file_entry.view_count = request.POST['f_viewcount']
+        if 'f_comment' in request.POST:
+            file_entry.comment = request.POST['f_comment'][:998]
+        if 'f_category' in request.POST: # Should category be editable?
+            file_entry.category = request.POST['f_category']
+        if 'f_tags' in request.POST:
+            file_entry.tags = request.POST['f_tags']
         file_entry.save()
         editing = False;
         
@@ -229,18 +239,24 @@ def file_details_page(request):
     template_vars = {
         'editing' : editing,
         'file_id' : file_entry.file_id,
-        'file_name' : file_entry.filename,
-        'upload_time' : file_entry.upload_time,
-        'view_count' : file_entry.view_count,
-        'comment' : file_entry.comment,
-        'category' : file_entry.category,
-        'tags' : file_entry.tags
+        'file': {
+            'name' : file_entry.filename,
+            'title' : file_entry.title,
+            'upload_time' : file_entry.upload_time,
+            'viewcount' : file_entry.view_count,
+            'comment' : file_entry.comment,
+            'category' : file_entry.category,
+            'tags' : file_entry.tags
+        }
     }
     return render_to_response('filedetails.html', template_vars, context_instance=RequestContext(request))
 
 def delete_file(request):
-    "Posting a fileid to this view permanently deletes the file from the system, including file stored on S3, and all metadata"
-    
+    """
+    Posting a fileid to this view with confirm=yes permanently deletes the file from the system,
+    including file stored on S3, and all metadata.
+    """
+
     user_id = user.get_user_id()
     bucketname = "s3.mediasnak.com"
     
@@ -248,6 +264,8 @@ def delete_file(request):
         return render_error(request, 'You did not specify which file to delete.', 'filelist.html')
     file_id = request.POST['fileid']
     
+    if 'confirm' not in request.POST or request.POST['confirm'] != 'yes':
+        return render_to_response('confirm_delete.html', {'file_id': file_id}, context_instance=RequestContext(request))
     try:
         delete.delete_file(bucketname, user_id, file_id)
     except MediasnakError, err:
@@ -260,7 +278,7 @@ def delete_file(request):
 
 def purge_uploads(request):
     upload.purge_uploads()
-    return HttpResponse(status=204) # 204 OK No Response
+    return HttpResponse(status=204) # 204: OK, No Response
 
 def render_error(request, error_str, template='base.html', status=200):
     if type(error_str) is not str:

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="text-align: center;">
+    <br>Are you sure you want to delete this file?
+    <form method="POST" style="margin: 2em auto;">
+        {% csrf_token %}
+        <input type="checkbox" name="confirm" value="yes" id="del_confirm" onclick="do_toggle(this);">
+        <label for="del_confirm">Yes, I'm sure</label> &ndash;
+        <input type="hidden" name="fileid" value="{{file_id}}">
+        <input type="submit" id="del_submit" value="Delete it">
+        <script type="text/javascript">
+            document.getElementById('del_submit').disabled = true;
+            function do_toggle(item) {
+                document.getElementById('del_submit').disabled = !item.checked;
+            }
+        </script>
+    </form>
+    <form method="GET" action="{% url msnak.views.file_details_page %}">
+        <input type="hidden" name="fileid" value="{{file_id}}">
+        I've changed my mind &ndash; <input type="submit" value="Take me back">
+    </form>
+</div>
+{% endblock %}

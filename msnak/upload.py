@@ -9,6 +9,7 @@ import exception
 from google.appengine.api import images
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
+import logging
 try:
     from google.appengine.ext import deferred
 except ImportError:
@@ -37,6 +38,8 @@ def upload_form_parameters(bucketname, user_id):
     # Expiry date string in ISO8601 GMT format, one hour in the future:
     expiry = (datetime.utcnow() + timedelta(hours=1)).isoformat()+'Z'
 
+    
+    logging.debug("Constructing policy string...")
     # Construct policy string from JSON. This ensures that if the user tries something sneaky such as
     # altering the hidden form fields, then the upload will be rejected.
     policy_str = simplejson.dumps({
@@ -53,15 +56,19 @@ def upload_form_parameters(bucketname, user_id):
             ]
         })
 
+    logging.debug("Encoding base64...")
     policy = b64encode(policy_str.encode('utf8'))
+    logging.debug("Signing policy...")
     signature = hmac_sign(policy) # Sign the policy
     
+    logging.debug("Making database entry...")
     # Save the file ID in the database, so that we can match it up when the upload is finished
     # and also ensure it was a valid upload
     # The filename, upload time and view count will be filled in later (just setting upload time to the current time for now)
     # User ID may also be checked later
     file_entry = MediaFile(file_id=file_id, uploaded=False, user_id=user_id, filename='', upload_time=datetime.utcnow(), view_count=0, has_thumb=False)
     file_entry.save()
+    logging.debug("Returning values...")
     
     return { 'key': s3_key, 'aws_id': access_keys.key_id, 'policy': policy, 'signature': signature, 'return_host': os.environ['HTTP_HOST'], 'user_id': user_id }
 

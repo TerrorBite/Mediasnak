@@ -1,0 +1,15 @@
+{% spaceless %}
+<div class="file_{{ class }}">
+    <h2>{{ heading }}:</h2>{% endspaceless %} {% spaceless %}
+        {% if editing and editable %}
+        {% if editable == 2 %}
+        <textarea class="entry" name="f_{{ class }}">{{ value }}</textarea>
+        {% else %}
+        <input class="entry" type="text" name="f_{{ class }}" value="{{ value }}">
+        {% endif %}
+        {% else %}
+        <span class="entry {{value|yesno:", isnull"}}">{{ value|default:"(none)" }}</span>
+        {% endif %}
+    </span>
+</div>
+{% endspaceless %}

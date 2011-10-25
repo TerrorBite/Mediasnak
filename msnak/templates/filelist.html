@@ -9,70 +9,81 @@
 
 {% block css %}
 <style type="text/css">
-    {# Common styles #}
-    .red:hover {
-        color: red;
-    }
-    {% ifequal view "list" %}
+    {% ifequal view "list" %} {# List view #}
     div#content {
         /* this is kinda retarded */
         padding: 0 0 0 1px;
     }
-    div.filelist {
-        display: table;
+    table.filelist {
+        border-collapse: collapse;
         width: 100%;
         margin: 0;
     }
-    div.fileentry {
-        display: table-row;
-        margin: auto 0;
-    }
-    div.fileentry:nth-child(odd) {
+    /* Row Styles */
+    tr.fileentry:nth-child(odd) {
+        /* Odd rows only */
         background-color: #efe;
     }
-    div.fileentry:nth-child(even) {
+    tr.fileentry:nth-child(even) {
+        /* Even rows only */
         background-color: #fff;
     }
-    div.filelistheader {
+    thead.fileentry {
+        /* First row of the table i.e. header row */
         display: table-header-group;
         background-color: #ced;
+        font-size: 12pt;
     }
-    div.fileentry span, div.filelistheader span {
-        /* "Table Cell" */
-        display: table-cell;
+    /* Cell Styles */
+    .fileentry td {
+        /* All cells */
         padding: 0.2em 0.4em;
         text-align: center;
-    }
-    div.fileentry span {
         font-size: 80%;
     }
-    div.filelistheader span {
+    thead.fileentry td {
+        /* Every cell in the header */
         border-bottom: solid thin #ccc;
+        font-size: 100%;
     }
-    div.fileentry span form {
+    .fileentry td:first-child {
+        /* First cell of every row */
+        padding-left: 10px !important;
+    }
+    /* Other Styles */
+    tr.fileentry td form {
+        /* Forms within table cells */
         margin: 0;
         padding: 0;
         display: inline-block;
     }
-    .filename {
+    td.extended {
+        /* Cells which could contain long text */
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
         max-width: 200px;
     }
-    {% else %}
+    td.buttons {
+        white-space: nowrap;
+    }
+    {% else %} {# Thumbnail view #}
     div#content {
-        padding: 0;
+        padding: 0 0 8px 0;
         font-size: 0;
     }
     div.imgbox {
         text-align: center;
         width: 200px;
         height: 150px;
+        margin: 5px 0;
+        line-height: 150px;
+        border-bottom: solid thin #ccc;
     }
     img.thumbimg {
         max-width: 200px;
         max-height: 150px;
+        vertical-align: baseline;
     }
     div.thumbitem {
         font-size: 10pt;
@@ -92,10 +103,6 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-    }
-    span.thumbvcount {
-        padding: 5px 5px;
-        float: right;
     }
     {% endifequal %}
 </style>
@@ -132,69 +139,66 @@ Sort by:<br>
 {# TODO: INTEGRATE NEW FILE-LIST TEMPLATE WITH THIS FILE #}
 {% block content %}
 {% ifequal view "list" %} {# List view #}
-<div class="filelist">
-    <div class="filelistheader">
-        <span>
-            Filename
-        </span>
-        <span>
+<table class="filelist">
+    <thead class="fileentry">
+        <td>
+            Title
+        </td>
+        <td>
             Uploaded
-        </span>
-        <span>
+        </td>
+        <td>
             Views
-        </span>
-        <span>
+        </td>
+        <td>
             &nbsp;
-        </span>
-    </div>
-    {% for f in file_list_entries %}
-    <div class="fileentry">
-        <span class="filename" title="{{ f.name }}">
-            {{ f.name }}
-        </span>
-        <span class="filetime">
-            {{ f.upload_time }}
-        </span>
-        <span class="fileviews">
-            {{ f.view_count }}
-        </span>
-        <span class="filebuttons">
-            <form action="/file-details" method="GET">
-                <input type="submit" value="Details">
-                <input type="hidden" name="fileid" value="{{ f.file_id }}">
-            </form>
-            <form action="/download" method="GET">
-                <input type="submit" value="Download">
-                <input type="hidden" name="fileid" value="{{ f.file_id }}">
-            </form>
-            <form action="/delete" method="POST">
-                <input type="submit" value="Delete" class="red">
-                <input type="hidden" name="fileid" value="{{ f.file_id }}">
-            </form>
-        </span>
-    </div>
-    {% empty %}
-    There are no files to display.
-    {% endfor %}
-</div>
+        </td>
+    </thead>
+    <tbody>
+        {% for f in file_list_entries %}
+        <tr class="fileentry">
+            <td class="extended" title="{% firstof f.file_title f.filename %}">
+                {{ f.file_title }}
+            </td>
+            <td>
+                {{ f.upload_time }}
+            </td>
+            <td>
+                {{ f.view_count }}
+            </td>
+            <td class="buttons">
+                <form action="/file-details" method="GET">
+                    <input type="submit" value="Details">
+                    <input type="hidden" name="fileid" value="{{ f.file_id }}">
+                </form>
+                <form action="/download" method="GET">
+                    <input type="submit" value="Download">
+                    <input type="hidden" name="fileid" value="{{ f.file_id }}">
+                </form>
+            </td>
+        </tr>
+        {% empty %}
+        <tr class="fileentry">
+            <td colspan="4">
+                There are no files to display.
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
 {% else %} {# Thumbnails view #}
 
 {% for f in file_list_entries %}
 <div class="thumbitem">
-    <div class="thumbtitle">{{ f.name }}</div>
-    <div class="imgbox"><img class="thumbimg" src="{{ f.file_id|thumbnail_url }}" alt="{{ f.name }}" title="{{ f.name }}"></div>
+    <div class="thumbtitle" title="{{ f.filename }}">{% firstof f.file_title f.filename %}</div>
+    <div class="imgbox"><img class="thumbimg" src="{{ f.file_id|thumbnail_url }}" alt="{% firstof f.file_title f.filename %}" title="{{ f.filename }}"></div>
     <form action="/download" method="GET">
         <input type="submit" value="Download">
         <input type="hidden" name="fileid" value="{{ f.file_id }}">
     </form>
-    <span class="thumbvcount">{{ f.view_count }} downloads</span><br>
-    <form action="/file-details" method="GET">
+    <form action="/file-details" method="GET" style="float:right;">
         <input type="submit" value="Details">
-        <input type="hidden" name="fileid" value="{{ f.file_id }}">
-    </form>
-    <form action="/delete" method="POST" style="float: right;">
-        <input type="submit" value="Delete" class="red">
         <input type="hidden" name="fileid" value="{{ f.file_id }}">
     </form>
 </div>   
