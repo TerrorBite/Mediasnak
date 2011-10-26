@@ -1,17 +1,15 @@
 {% extends 'base.html' %}
+{% load msnaktags %}
 {% block title %}Welcome{% endblock %}
 {% block header-title %}Welcome to Mediasnak!{% endblock %}
 
 {% block sidebar %}
-Your recent uploads:
-{% if recentfiles %}
-{% for file in recentfiles %}
-<br>{{ file }}
-{% endfor %}
-{% else %}
-<br>Not Yet Implemented
+{% if username %}
+Your latest upload:
+{% recent_upload %}
+<hr>
 {% endif %}
-<hr>Developer Links:
+Developer Links:
 <ul style="font-size: 80%">
     <li><a href="http://www.djangobook.com/">Django book</a></li>
     <li><a href="http://djangosnippets.org/">djangosnippets</a></li>

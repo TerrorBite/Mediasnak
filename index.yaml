@@ -48,6 +48,13 @@ indexes:
   properties:
   - name: uploaded
   - name: user_id
+  - name: upload_time
+    direction: desc
+
+- kind: msnak_mediafile
+  properties:
+  - name: uploaded
+  - name: user_id
   - name: view_count
 
 - kind: msnak_mediafile

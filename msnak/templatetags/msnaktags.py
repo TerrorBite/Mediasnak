@@ -2,6 +2,9 @@ from django import template
 from django.template.defaultfilters import stringfilter
 import urllib
 
+from msnak.models import MediaFile
+from msnak.user import get_user_id
+
 register = template.Library()
 
 @register.filter
@@ -39,3 +42,20 @@ def get_query(context, field_name, value):
     qs = dict([(i, str(q[i])) for i in q]) # not really sure wtf I'm writing any more
     qs.update({field_name: value})         # I just know it works
     return urllib.urlencode(qs)
+
+@register.simple_tag()
+def recent_upload():
+    user_id = get_user_id()
+    try:
+        f = MediaFile.objects.filter(user_id=user_id).filter(uploaded=True).order_by('-upload_time')[0:1].get()
+    except MediaFile.DoesNotExist:
+        return "No recent uploads"
+    return '''
+    <div style="text-align: center; border: solid thin #333; overflow: hidden;">
+    <a href="/file-details?fileid=%s">%s</a>
+    <div style="min-height: 100px; line-height: 100px; border-top: solid thin #999;">
+    <img src="/thumb?fileid=%s" style="max-width: 140px; vertical-align: middle;" alt="Recent Upload">
+    </div>
+    </div>
+    ''' % (f.file_id, f.title or f.filename, f.file_id)
+
