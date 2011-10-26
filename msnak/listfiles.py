@@ -14,9 +14,11 @@ def get_file_data(file_entry):
     # alternative dictionary syntax, apparently:
     # dict( a = b, c = d )
 
-def get_user_file_list(user_id, bucketname, orderby=None):
+def get_user_file_list(user_id, bucketname, orderby=None, browseby=None):
 
     file_entries = MediaFile.objects.filter(user_id=user_id).filter(uploaded=True) # retrieve the user's items
+
+    if browseby == 'all': browseby = None
     
     # Currently in links, ['name', 'type', 'date', 'cat', 'meta'], could convert them
     if orderby and orderby in ['title', 'filename', 'upload_time', 'view_count', 'category']:
@@ -26,7 +28,10 @@ def get_user_file_list(user_id, bucketname, orderby=None):
     file_list_entries = []
     filenames = []
     for file_entry in file_entries:
-        file_list_entries.append(get_file_data(file_entry))
+        if browseby and file_entry.category != browseby:
+            continue
+        else:
+            file_list_entries.append(get_file_data(file_entry))
     
     # Use render_to_response shortcut to fill out the HTML template
     return {

@@ -123,6 +123,10 @@ def list_files_page(request):
     viewtype = 'thumb'
     if 'view' in request.GET:
         viewtype = request.GET['view']
+
+    browseby = None
+    if 'type' in request.GET:
+        browseby = request.GET['type']
     
     #def search_files(request):
     #"displays a list of files matching the request"
@@ -142,7 +146,7 @@ def list_files_page(request):
             return render_error(request, err, 'filelist.html')
         
     else:
-        template_vars = listfiles.get_user_file_list(user_id, bucketname, orderby)
+        template_vars = listfiles.get_user_file_list(user_id, bucketname, orderby, browseby)
     template_vars.update({
         'view': viewtype,
         'query': request.GET,
