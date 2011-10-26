@@ -141,11 +141,11 @@ def list_files_page(request):
         except MediasnakError, err:
             return render_error(request, err, 'filelist.html')
         
-        return render_to_response('filelist.html', template_vars, context_instance=RequestContext(request))
-
-    template_vars = listfiles.get_user_file_list(user_id, bucketname, orderby)
+    else:
+        template_vars = listfiles.get_user_file_list(user_id, bucketname, orderby)
     template_vars.update({
         'view': viewtype,
+        'query': request.GET,
         })
 
     return render_to_response('filelist.html', template_vars, context_instance=RequestContext(request))

@@ -20,6 +20,8 @@ urlpatterns = patterns('',
     ('^files$', 'msnak.views.list_files_page', {}),
     ('^file-details$', 'msnak.views.file_details_page', {}),
     ('^thumb$', 'msnak.views.get_thumbnail', {}),
+    ('^tags$', 'django.views.generic.simple.direct_to_template', {'template': 'tags.html'}),
+    ('^search$', 'django.views.generic.simple.direct_to_template', {'template': 'search.html'}),
 
     ('^cron/purgedb$', 'msnak.views.purge_uploads', {}),
 

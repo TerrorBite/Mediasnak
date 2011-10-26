@@ -22,5 +22,35 @@ indexes:
 
 - kind: msnak_mediafile
   properties:
+  - name: uploaded
+  - name: user_id
+  - name: category
+
+- kind: msnak_mediafile
+  properties:
+  - name: uploaded
+  - name: user_id
+  - name: filename
+
+- kind: msnak_mediafile
+  properties:
+  - name: uploaded
+  - name: user_id
+  - name: title
+
+- kind: msnak_mediafile
+  properties:
+  - name: uploaded
+  - name: user_id
+  - name: upload_time
+
+- kind: msnak_mediafile
+  properties:
+  - name: uploaded
+  - name: user_id
+  - name: view_count
+
+- kind: msnak_mediafile
+  properties:
   - name: user_id
   - name: upload_time

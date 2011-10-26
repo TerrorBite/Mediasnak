@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Search{% endblock %}
+{% block header-title %}Search for Files{% endblock %}
+
+{% block css %}
+<style type="text/css">
+    #advsearchform {
+        width: 100%;
+        text-align: center;
+        line-height: 400%;
+        word-spacing: 200%;
+    }
+    #terms {
+        font-size: 14pt;
+        width: 50%;
+        margin: auto 0.5em;
+    }
+    #searchbtn {
+        font-size: 14pt;
+    }
+    #searchby {
+        font-size: 12pt;
+    }
+</style>
+{% endblock %}
+
+{% block sidebar %}
+{# what should go in here? #}
+{% endblock %}
+
+{#{% block searchbar %}{% endblock %} uncomment to make quicksearch bar vanish #}
+
+{% block content %}
+<br>
+<form id="advsearchform" method="GET" action="files">
+    <label for="terms">Find</label><input type="text" name="searchterm" id="terms"> in
+    <select id="searchby" name="searchby" title="Search by:">
+        <option value="default">Everything</option>
+        <option value="title">Title</option>
+        <option value="filename">Filename</option>
+        <option value="uploadtime">Uploaded</option>
+        <option value="comment">Comments</option>
+        <option value="tags">Tags</option>
+    </select>
+    <br><input type="submit" value="Search" id="searchbtn">
+</form>
+
+{% endblock %}

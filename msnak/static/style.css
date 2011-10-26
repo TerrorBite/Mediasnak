@@ -110,14 +110,20 @@ div#navbar a:hover {
 #searchbox {
     padding: 0;
     margin: 0;
-    width: 146px;
+    width: 145px;
+}
+#searchbox.fade {
+    color: #999;
 }
 #submit {
     padding: 0;
     margin: 0;
-    width: 53px;
+    width: 30px;
 }
-.searchby {
+.searchadv {
+    display: inline-block;
+    text-align: right;
+    font-size: 11pt;
     width: 93px;
 }
 div.navlink {

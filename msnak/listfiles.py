@@ -19,7 +19,7 @@ def get_user_file_list(user_id, bucketname, orderby=None):
     file_entries = MediaFile.objects.filter(user_id=user_id).filter(uploaded=True) # retrieve the user's items
     
     # Currently in links, ['name', 'type', 'date', 'cat', 'meta'], could convert them
-    if orderby and orderby in ['filename', 'upload_time', 'view_count', 'category']:
+    if orderby and orderby in ['title', 'filename', 'upload_time', 'view_count', 'category']:
         file_entries = file_entries.order_by(orderby)
     
     # file_list_entries is the file information which will be used by the template
@@ -38,7 +38,7 @@ def search_files(bucketname, user_id, search_by, search_term, orderby=None):
     file_entries = MediaFile.objects.filter(user_id=user_id).filter(uploaded=True)
     
     # Currently in links, ['name', 'type', 'date', 'cat', 'meta'], could convert them
-    if orderby and orderby in ['filename', 'upload_time', 'view_count', 'category']:
+    if orderby and orderby in ['title', 'filename', 'upload_time', 'view_count', 'category']:
         file_entries = file_entries.order_by(orderby)
         
     results = []
@@ -48,7 +48,15 @@ def search_files(bucketname, user_id, search_by, search_term, orderby=None):
     if search_by == "default":
         for item in file_entries:
             #neaten this up later
-            if (search_term in item.filename) or (search_term in str(item.upload_time)):
+            if (search_term in item.filename) or \
+            (item.title and search_term in item.title) or \
+            (item.tags and search_term in item.tags) or \
+            (item.comment and search_term in item.comment) or \
+            (search_term in str(item.upload_time)):
+                results.append(get_file_data(item))
+    elif search_by == "title":
+        for item in file_entries:
+            if item.title and search_term in item.title:
                 results.append(get_file_data(item))
     elif search_by == "filename":
         for item in file_entries:
@@ -60,11 +68,11 @@ def search_files(bucketname, user_id, search_by, search_term, orderby=None):
                 results.append(get_file_data(item))
     elif search_by == "comment":
         for item in file_entries:
-            if search_term in item.comment:
+            if item.comment and search_term in item.comment:
                 results.append(get_file_data(item))
     elif search_by == "tags":
         for item in file_entries:
-            if search_term in item.tags:
+            if item.tags and search_term in item.tags:
                 results.append(get_file_data(item))
     elif search_by == "category":
         for item in file_entries:

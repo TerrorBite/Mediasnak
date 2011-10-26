@@ -110,30 +110,22 @@
 
 {% block sidebar %}
 View as:<br>
-<a href="?view=list">List</a><br>
-<a href="?view=thumb">Thumbnails</a><br>
-<hr>
-Browse by Type:<br>
-<a href="?type=all">All</a><br>
-<a href="?type=image">Image</a><br>
-<a href="?type=video">Video</a><br>
-<a href="?type=audio">Audio</a><br>
-<a href="?type=other">Other</a><br>
+<a href="?{% get_query "view" "list" %}">List</a><br>
+<a href="?{% get_query "view" "thumb" %}">Thumbnails</a><br>
 <hr>
 Browse by Category:<br>
-<a href="?cat=">All</a><br>
-<a href="?cat=1">Category 1</a><br>
-<a href="?cat=2">Category 2</a><br>
-<a href="?cat=3">Category 3</a><br>
-<a href="?cat=4">Category 4</a><br>
-<a href="?cat=5">Category 5</a><br>
+<a href="?{% get_query "type" "all" %}">All</a><br>
+<a href="?{% get_query "type" "image" %}">Image</a><br>
+<a href="?{% get_query "type" "video" %}">Video</a><br>
+<a href="?{% get_query "type" "audio" %}">Audio</a><br>
+<a href="?{% get_query "type" "other" %}">Other</a><br>
 <hr>
 Sort by:<br>
-<a href="?sort=name">Name</a><br>
-<a href="?sort=type">Type</a><br>
-<a href="?sort=date">Date Uploaded</a><br>
-<a href="?sort=cat">Category</a><br>
-<a href="?sort=meta">Metadata</a><br>
+<a href="?{% get_query "sort" "title" %}">Title</a><br>
+<a href="?{% get_query "sort" "filename" %}">File Name</a><br>
+<a href="?{% get_query "sort" "upload_time" %}">Date Uploaded</a><br>
+<a href="?{% get_query "sort" "view_count" %}">Download Count</a><br>
+<a href="?{% get_query "sort" "category" %}">Category</a><br>
 {% endblock %}
 
 {# TODO: INTEGRATE NEW FILE-LIST TEMPLATE WITH THIS FILE #}
@@ -157,8 +149,8 @@ Sort by:<br>
     <tbody>
         {% for f in file_list_entries %}
         <tr class="fileentry">
-            <td class="extended" title="{% firstof f.file_title f.filename %}">
-                {{ f.file_title }}
+            <td class="extended" title="{{ f.filename }}">
+                {% firstof f.file_title f.filename %}
             </td>
             <td>
                 {{ f.upload_time }}
